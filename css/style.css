@@ -8,5 +8,97 @@
 }
 
 body {
-    font-family: sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    color: #363639;
+}
+
+/* ─── STORYTELLING ───────────────────────────────────────────── */
+
+.storytelling {
+    position: relative;
+}
+
+.story-item {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+}
+
+.story-item:nth-child(1) { z-index: 1; background: #FAFAFA; }
+.story-item:nth-child(2) { z-index: 2; background: #FCFCFC; }
+.story-item:nth-child(3) { z-index: 3; background: #F8F8F8; }
+.story-item:nth-child(4) { z-index: 4; background: #FAFAFA; }
+
+/* Image column */
+.story-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.story-image__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* Content column */
+.story-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(40px, 6vw, 80px) clamp(32px, 5vw, 72px) clamp(40px, 6vw, 80px) clamp(32px, 6vw, 80px);
+    gap: 10px;
+}
+
+.story-number {
+    display: block;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+}
+
+.story-stat {
+    font-size: clamp(56px, 8vw, 112px);
+    font-weight: 600;
+    font-style: normal;
+    line-height: 1.5;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-align: center;
+    letter-spacing: 0;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.story-stat__unit {
+    font-size: clamp(20px, 2.5vw, 32px);
+    font-weight: 300;
+    letter-spacing: 0;
+}
+
+.story-title {
+    font-size: clamp(18px, 2vw, 26px);
+    font-weight: 300;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+}
+
+.story-desc {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: #6b7480;
+    max-width: 420px;
 }

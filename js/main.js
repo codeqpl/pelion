@@ -11,6 +11,15 @@
 gsap.registerPlugin(ScrollTrigger);
 
 /* ────────────────────────────────────────────────────────
+   ELEMENTY
+──────────────────────────────────────────────────────── */
+const strip     = document.getElementById('heroStrip');
+const headline  = document.getElementById('heroHeadline');
+const videoCard = document.getElementById('videoCard');
+const cards     = Array.from(strip.querySelectorAll('.card'));
+const videoIdx  = cards.indexOf(videoCard); // 4
+
+/* ────────────────────────────────────────────────────────
    STAŁE
 ──────────────────────────────────────────────────────── */
 const CARD_W  = 332;
@@ -21,13 +30,26 @@ const DROP_SM = Math.round(424 * 0.10);  // 42 px  (karty 3 i 5)
 const DROP_LG = Math.round(424 * 0.20);  // 85 px  (karta 4 – video)
 
 /* ────────────────────────────────────────────────────────
-   ELEMENTY
+   OPACITY
+   syncCardOpacities  — chowa karty wychodzące poza krawędź (stan K1)
+   revealEnteringCards — pokazuje kartę, gdy tylko jej krawędź wejdzie
+                         w viewport; nie chowa wychodzących
 ──────────────────────────────────────────────────────── */
-const strip     = document.getElementById('heroStrip');
-const headline  = document.getElementById('heroHeadline');
-const videoCard = document.getElementById('videoCard');
-const cards     = Array.from(strip.querySelectorAll('.card'));
-const videoIdx  = cards.indexOf(videoCard); // 4
+function syncCardOpacities() {
+    const vw = window.innerWidth;
+    cards.forEach(card => {
+        const r = card.getBoundingClientRect();
+        gsap.set(card, { opacity: (r.left >= 0 && r.right <= vw) ? 1 : 0 });
+    });
+}
+
+function revealEnteringCards() {
+    const vw = window.innerWidth;
+    cards.forEach(card => {
+        const r = card.getBoundingClientRect();
+        if (r.left < vw && r.right > 0) gsap.set(card, { opacity: 1 });
+    });
+}
 
 /* podziel nagłówek na wyrazy — animacja słowo-po-słowie */
 (function splitWords() {
@@ -54,6 +76,7 @@ function getFinalX() {
 }
 
 gsap.set(strip, { x: getInitialX() });
+syncCardOpacities();
 
 /* ────────────────────────────────────────────────────────
    K1 → K2
@@ -63,11 +86,19 @@ gsap.delayedCall(0.4, runPhase2);
 function runPhase2() {
     const tl = gsap.timeline();
 
-    /* 1. pasek jedzie w lewo — 2 s */
-    tl.to(strip, { x: getFinalX(), duration: 2, ease: 'power2.inOut' });
+    /* 1. pasek jedzie w lewo — 2 s; karty wchodzące w viewport odkrywane od razu */
+    tl.to(strip, { x: getFinalX(), duration: 2, ease: 'power2.inOut', onUpdate: revealEnteringCards });
 
-    /* 2. po zatrzymaniu: pokaż nagłówek, opuść karty */
+    /* 2. po zatrzymaniu: pokaż nagłówek, opuść karty + jednoczesny fade-out kart bocznych */
     tl.call(() => {
+        /* tylko karty ucięte przez krawędź viewport znikają równo z startem opadania */
+        const vw = window.innerWidth;
+        const cutCards = cards.filter(c => {
+            const r = c.getBoundingClientRect();
+            return r.left < 0 || r.right > vw;
+        });
+        gsap.to(cutCards, { opacity: 0, duration: 0.35, delay: 0.15, ease: 'power2.in' });
+
         const hero   = document.querySelector('.hero');
         const hr     = hero.getBoundingClientRect();
         const c3     = cards[3].getBoundingClientRect();
@@ -78,11 +109,9 @@ function runPhase2() {
             left:  c3.left - hr.left,
             width: c5.right - c3.left,
             right: 'auto',
-            opacity: 1,              // wrapper widoczny, wyrazy jeszcze ukryte
+            opacity: 1,
         });
 
-        /* nagłówek wyśrodkowany między dolną krawędzią nav a górną krawędzią kart,
-           z lekkim obniżeniem (+12 px) */
         const hh       = headline.offsetHeight;
         const navBot   = document.querySelector('.nav').getBoundingClientRect().bottom - hr.top;
         const cardTop  = c3.top - hr.top;
@@ -131,8 +160,8 @@ function runPhase3setup() {
     const nav = document.querySelector('.nav');
     document.body.appendChild(nav);
 
-    /* wydłuż wrapper — daje przestrzeń na 3 hasła */
-    document.querySelector('.hero-scroll-wrap').style.height = '310vh';
+    /* wydłuż wrapper — daje przestrzeń na rozwinięcie video + dwell na pełnym ekranie */
+    document.querySelector('.hero-scroll-wrap').style.height = '130vh';
 
     /* ── overlay ── */
     const overlay = document.createElement('div');
@@ -210,24 +239,57 @@ function runPhase3setup() {
     const layer2 = makeTextLayer('Inwestujemy w rozwój i innowacje');
     const layer3 = makeTextLayer('Dynamicznie rozszerzamy zasięg w Europie');
 
+    /* lekki offset startowy — float-in z dołu (pomijamy przy reduce-motion) */
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reducedMotion) {
+        [layer1, layer2, layer3].forEach(l => gsap.set(l.firstElementChild, { y: 14 }));
+    }
+
+    /* ── time-based animacja haseł ────────────────────────── */
+    let textsStarted = false;
+    let textTl       = null;   /* referencja do aktywnego timeline — do ubicia przy scroll-back */
+
+    const layers = [layer1, layer2, layer3];
+
+    function resetTexts() {
+        if (textTl) { textTl.kill(); textTl = null; }
+        layers.forEach(l => {
+            gsap.set(l, { opacity: 0 });
+            if (!reducedMotion) gsap.set(l.firstElementChild, { y: 14 });
+        });
+        textsStarted = false;
+    }
+
+    function startTextAnimations() {
+        const FADE  = 0.5;
+        const DWELL = 2.0;
+        const GAP   = 0.5;
+
+        function addEntry(tl, layer, t) {
+            tl.to(layer, { opacity: 1, duration: FADE, ease: 'power2.out' }, t);
+            if (!reducedMotion) {
+                tl.to(layer.firstElementChild, { y: 0, duration: FADE + 0.1, ease: 'power2.out' }, t);
+            }
+            return t + DWELL;
+        }
+
+        textTl = gsap.timeline();
+
+        let tOut = addEntry(textTl, layer1, 0.9);
+        textTl.to(layer1, { opacity: 0, duration: FADE, ease: 'power2.in' }, tOut);
+
+        tOut = addEntry(textTl, layer2, tOut + FADE + GAP);
+        textTl.to(layer2, { opacity: 0, duration: FADE, ease: 'power2.in' }, tOut);
+
+        addEntry(textTl, layer3, tOut + FADE + GAP);
+    }
+
     document.body.appendChild(overlay);
     gsap.set(videoCard, { opacity: 0 });
 
     /* ── ScrollTrigger ──────────────────────────────────────
-       Każde przejście ma jawny duration (0.04 s) żeby tweeny
-       nie nakładały się na siebie (domyślne 0.5 s powodowało
-       nakładanie liter).
-
-       Oś czasu — hasła dłużej widoczne, krótki ogon po hasle 3:
-         0.00 – 0.26   overlay rośnie do pełnego ekranu
-         0.28 – 0.32   hasło 1 fade-in
-         0.32 – 0.54   hasło 1 widoczne   (dłużej)
-         0.54 – 0.58   hasło 1 fade-out
-         0.60 – 0.64   hasło 2 fade-in
-         0.64 – 0.84   hasło 2 widoczne   (dłużej)
-         0.84 – 0.88   hasło 2 fade-out
-         0.90 – 0.94   hasło 3 fade-in    ← pojawia się blisko końca
-         0.94 – …      hasło 3 widoczne (krótki ogon ~20 vh)
+       0.00 – 0.26   overlay rośnie do pełnego ekranu
+       po 0.26       hasła pojawiają się automatycznie (time-based)
     ── */
     const mainTl = gsap.timeline({
         scrollTrigger: {
@@ -236,16 +298,17 @@ function runPhase3setup() {
             end:     'bottom bottom',
             scrub:   0.8,
             invalidateOnRefresh: true,
-            /* Gdy hero odpina się od góry, konwertuj overlay z fixed → absolute
-               w bieżącej pozycji scrollu. Overlay przestaje "wisieć" na ekranie
-               i scrolluje naturalnie razem ze stroną — bez białego ekranu,
-               bez nachodzenia na sekcję niżej. */
             onUpdate: (self) => {
-                /* dokładnie gdy overlay wypełnia ekran (progress 0.26) */
-                if (self.progress >= 0.26) {
+                if (self.progress >= 0.5) {
                     nav.classList.add('nav--film');
+                    if (!textsStarted) {
+                        textsStarted = true;
+                        startTextAnimations();
+                    }
                 } else {
                     nav.classList.remove('nav--film');
+                    /* box skurczył się z powrotem — ukryj nagłówki i zresetuj */
+                    if (textsStarted || textTl) resetTexts();
                 }
             },
             onLeave: () => {
@@ -271,30 +334,16 @@ function runPhase3setup() {
         },
     });
 
-    /* powiększenie overlay */
+    /* powiększenie overlay — zajmuje pierwsze 50% scrollu */
     mainTl.to(overlay,
-        { top: 0, left: 0, width: vw, height: vh, ease: 'none', duration: 0.26 }, 0);
+        { top: 0, left: 0, width: vw, height: vh, ease: 'none', duration: 0.5 }, 0);
     mainTl.to(cards.filter(c => c !== videoCard),
-        { opacity: 0, ease: 'none', duration: 0.26 }, 0);
+        { opacity: 0, ease: 'none', duration: 0.5 }, 0);
     mainTl.to(headline,
-        { opacity: 0, ease: 'none', duration: 0.26 }, 0);
+        { opacity: 0, ease: 'none', duration: 0.5 }, 0);
 
-    /* ── hasła — crossfade 0.06 s, zakładka 0.01 s między out a in ──
-         hasło 1:  in 0.28–0.34 │ visible 0.34–0.53 │ out 0.53–0.59
-         hasło 2:  in 0.58–0.64 │ visible 0.64–0.81 │ out 0.81–0.87
-         hasło 3:  in 0.86–0.92 │ visible do końca
-    ── */
-
-    /* hasło 1 */
-    mainTl.to(layer1, { opacity: 1, ease: 'power1.out', duration: 0.06 }, 0.28);
-    mainTl.to(layer1, { opacity: 0, ease: 'power1.in',  duration: 0.06 }, 0.53);
-
-    /* hasło 2 — start 0.01 przed końcem fade-out hasła 1 → miękki dissolve */
-    mainTl.to(layer2, { opacity: 1, ease: 'power1.out', duration: 0.06 }, 0.58);
-    mainTl.to(layer2, { opacity: 0, ease: 'power1.in',  duration: 0.06 }, 0.81);
-
-    /* hasło 3 */
-    mainTl.to(layer3, { opacity: 1, ease: 'power1.out', duration: 0.06 }, 0.86);
+    /* pad timeline do 1.0 s */
+    mainTl.to({}, { duration: 0.5 }, 0.5);
 }
 
 /* ────────────────────────────────────────────────────────
@@ -520,3 +569,92 @@ document.querySelectorAll('.onas__trigger').forEach(btn => {
         }
     });
 });
+
+/* ────────────────────────────────────────────────────────
+   CYTAT — scroll-reveal wyraz po wyrazie
+   Dzieli tekst (w tym <strong>) na .pq-word spany w JS,
+   następnie animuje color każdego słowa w kolejności
+   czytania w oparciu o pozycję sekcji w viewport.
+   Brak GSAP, pinowania, snappingu — efekt pasywny.
+──────────────────────────────────────────────────────── */
+(function initPqWordReveal() {
+    const container = document.getElementById('pqText');
+    if (!container) return;
+
+    /* prefers-reduced-motion → CSS ustawia już ciemny kolor, JS nie rusza */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    /* ── 1. Owijanie węzłów tekstowych w .pq-word ─────── */
+    function wrapWords(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const parts = node.textContent.split(/(\s+)/);
+            const frag  = document.createDocumentFragment();
+            parts.forEach(part => {
+                if (!part) return;
+                if (/^\s+$/.test(part)) {
+                    frag.appendChild(document.createTextNode(part));
+                } else {
+                    const span = document.createElement('span');
+                    span.className = 'pq-word';
+                    span.textContent = part;
+                    frag.appendChild(span);
+                }
+            });
+            node.parentNode.replaceChild(frag, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            Array.from(node.childNodes).forEach(wrapWords);
+        }
+    }
+
+    wrapWords(container);
+
+    const words = Array.from(container.querySelectorAll('.pq-word'));
+    const N     = words.length;
+
+    /* ── 2. Obliczanie progresu sekcji w viewport ──────── */
+    function calcProgress() {
+        const rect = container.getBoundingClientRect();
+        const vh   = window.innerHeight;
+        /* 0: sekcja wchodzi od dołu → 1: góra sekcji przy 25% od góry ekranu */
+        return Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.55)));
+    }
+
+    /* ── 3. Aktualizacja kolorów ───────────────────────── */
+    function updateColors(progress) {
+        words.forEach((word, i) => {
+            /* każde słowo przechodzi przez 1.5 „szczeliny" — delikatne nakładanie */
+            const wp = Math.max(0, Math.min(1, (progress * (N + 0.5) - i) / 1.5));
+            /* interpolacja: #c8c8c8 (200,200,200) → #363639 (54,54,57) */
+            const r  = Math.round(200 + (54  - 200) * wp);
+            const g  = Math.round(200 + (54  - 200) * wp);
+            const b  = Math.round(200 + (57  - 200) * wp);
+            word.style.color = `rgb(${r},${g},${b})`;
+        });
+    }
+
+    /* ── 4. Pętla rAF z lekkim wygładzeniem ───────────── */
+    let current = 0;
+    let running = false;
+
+    function loop() {
+        const target = calcProgress();
+        current += (target - current) * 0.08;
+        updateColors(current);
+
+        if (Math.abs(target - current) > 0.001) {
+            requestAnimationFrame(loop);
+        } else {
+            updateColors(target);
+            current = target;
+            running = false;
+        }
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!running) { running = true; requestAnimationFrame(loop); }
+    }, { passive: true });
+
+    /* stan początkowy (np. odświeżenie w połowie strony) */
+    current = calcProgress();
+    updateColors(current);
+})();

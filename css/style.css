@@ -15,7 +15,7 @@ body {
    SCROLL PIN WRAPPER
 ═══════════════════════════════════════════════════════════ */
 .hero-scroll-wrap {
-    height: 280vh;
+    height: 100vh;   /* brak scrolla przed K3; runPhase3setup rozszerza do 200vh */
     position: relative;
 }
 
@@ -311,6 +311,17 @@ body {
     color: #363639;
 }
 .pq__inner strong { font-weight: 700; }
+
+/* ── słowa cytatu — kolor ustawiany przez JS ── */
+.pq-word {
+    display: inline;
+    color: #c8c8c8;           /* kolor startowy; JS animuje do #363639 */
+}
+
+/* prefers-reduced-motion: wszystkie słowa od razu ciemne */
+@media (prefers-reduced-motion: reduce) {
+    .pq-word { color: #363639; }
+}
 
 .pq__map {
     position: relative;

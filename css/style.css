@@ -295,13 +295,18 @@ body {
 ═══════════════════════════════════════════════════════════ */
 .pq {
     background: #fff;
-    padding: 160px 200px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
 }
 .pq__inner {
     max-width: 960px;
     text-align: center;
+    position: relative;
+    z-index: 2;
+    padding: 160px 40px 0;
 }
 .pq__inner p {
     font-family: 'Montserrat', sans-serif;
@@ -311,6 +316,34 @@ body {
     color: #363639;
 }
 .pq__inner strong { font-weight: 700; }
+
+.pq__map {
+    position: relative;
+    width: 100vw;
+    height: 520px;
+    flex-shrink: 0;
+}
+.pq__map-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+}
+.pq__map-top {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 55%;
+    background: linear-gradient(179deg, #fff 9%, rgba(255,255,255,0) 48%);
+    pointer-events: none;
+}
+.pq__map-bottom {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 45%;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 21%, #fff 99%);
+    pointer-events: none;
+}
 
 /* ═══════════════════════════════════════════════════════════
    O NAS
@@ -685,6 +718,7 @@ body {
 .marki__track {
     overflow: hidden;
     position: relative;
+    user-select: none;
 }
 /* gradient fade left/right */
 .marki__track::before,

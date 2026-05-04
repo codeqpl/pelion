@@ -400,20 +400,98 @@ function runPhase3setup() {
         /* 3. Po wyrenderowaniu zmierz dokładną szerokość połowy */
         requestAnimationFrame(() => {
             const halfW = row.scrollWidth / 2;
-            const fromX = toLeft ? 0        : -halfW;
-            const toX   = toLeft ? -halfW   : 0;
+            const fromX = toLeft ? 0      : -halfW;
+            const toX   = toLeft ? -halfW : 0;
 
             gsap.set(row, { x: fromX });
 
-            const tween = gsap.fromTo(row,
-                { x: fromX },
-                { x: toX, duration: 28, ease: 'none', repeat: -1 }
-            );
+            let tween;
+            let isHovered  = false;
+            let isDragging = false;
+            let dragStartMouseX = 0;
+            let dragStartX      = 0;
 
-            /* 4. Pauza / wznowienie na hover */
+            /* Normalizuje x do zakresu [-halfW, 0] (zapętlenie treści) */
+            function wrapX(x) {
+                return -(((-x % halfW) + halfW) % halfW);
+            }
+
+            /* Tworzy tween od podanego x do końca cyklu, potem pełny repeat */
+            function startTween(currentX) {
+                if (tween) tween.kill();
+                const remaining = Math.abs(currentX - toX);
+                const dur = (remaining / halfW) * 28;
+                tween = gsap.to(row, {
+                    x: toX, duration: dur, ease: 'none',
+                    onComplete: () => {
+                        gsap.set(row, { x: fromX });
+                        tween = gsap.fromTo(row,
+                            { x: fromX },
+                            { x: toX, duration: 28, ease: 'none', repeat: -1 }
+                        );
+                        if (isHovered || isDragging) tween.pause();
+                    },
+                });
+            }
+
+            startTween(fromX);
+
             const track = row.closest('.marki__track');
-            track.addEventListener('mouseenter', () => tween.pause());
-            track.addEventListener('mouseleave', () => tween.resume());
+            track.style.cursor = 'grab';
+
+            /* Hover — pauza / wznowienie */
+            track.addEventListener('mouseenter', () => {
+                isHovered = true;
+                if (!isDragging) tween.pause();
+            });
+            track.addEventListener('mouseleave', () => {
+                isHovered = false;
+                if (!isDragging) tween.resume();
+            });
+
+            /* Drag — start */
+            track.addEventListener('mousedown', (e) => {
+                isDragging      = true;
+                dragStartMouseX = e.clientX;
+                dragStartX      = gsap.getProperty(row, 'x');
+                tween.pause();
+                track.style.cursor = 'grabbing';
+                e.preventDefault();
+            });
+
+            /* Drag — ruch */
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx   = e.clientX - dragStartMouseX;
+                const newX = wrapX(dragStartX + dx);
+                gsap.set(row, { x: newX });
+            });
+
+            /* Drag — koniec — wznów animację od aktualnej pozycji */
+            document.addEventListener('mouseup', () => {
+                if (!isDragging) return;
+                isDragging         = false;
+                track.style.cursor = isHovered ? 'grab' : 'grab';
+                const currentX     = gsap.getProperty(row, 'x');
+                if (!isHovered) {
+                    startTween(currentX);
+                } else {
+                    /* zostanie wznowiony przy mouseleave */
+                    if (tween) tween.kill();
+                    tween = gsap.fromTo(row,
+                        { x: currentX },
+                        { x: toX, duration: (Math.abs(currentX - toX) / halfW) * 28, ease: 'none',
+                          repeat: 0,
+                          onComplete: () => {
+                              gsap.set(row, { x: fromX });
+                              tween = gsap.fromTo(row, { x: fromX }, { x: toX, duration: 28, ease: 'none', repeat: -1 });
+                              tween.pause();
+                          }
+                        }
+                    );
+                    tween.pause();
+                }
+            });
         });
     });
 })();

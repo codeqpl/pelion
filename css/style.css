@@ -295,18 +295,12 @@ body {
 ═══════════════════════════════════════════════════════════ */
 .pq {
     background: #fff;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
     position: relative;
 }
 .pq__inner {
     max-width: 960px;
-    width: 100%;
     margin: 0 auto;
     text-align: center;
-    position: relative;
-    z-index: 2;
     padding: 160px 40px 0;
 }
 .pq__inner p {
@@ -320,9 +314,8 @@ body {
 
 .pq__map {
     position: relative;
-    width: 100vw;
+    width: 100%;
     height: 520px;
-    flex-shrink: 0;
 }
 .pq__map-img {
     width: 100%;

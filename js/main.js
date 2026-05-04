@@ -438,29 +438,33 @@ function runPhase3setup() {
             track.addEventListener('mouseenter', () => { isHovered = true;  tween && tween.pause(); });
             track.addEventListener('mouseleave', () => { isHovered = false; tween && tween.resume(); });
 
-            /* Drag — Pointer Events z capture (niezawodne poza elementem) */
+            /* Drag */
+            let isDragging    = false;
             let dragStartX    = 0;
             let dragStartPosX = 0;
 
-            track.addEventListener('pointerdown', (e) => {
-                track.setPointerCapture(e.pointerId);
+            track.addEventListener('mousedown', (e) => {
+                isDragging    = true;
                 dragStartX    = e.clientX;
                 dragStartPosX = gsap.getProperty(row, 'x');
-                if (tween) tween.pause();
-                track.style.cursor = 'grabbing';
+                tween && tween.pause();
+                track.style.cursor        = 'grabbing';
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
             });
 
-            track.addEventListener('pointermove', (e) => {
-                if (!track.hasPointerCapture(e.pointerId)) return;
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
                 const dx   = e.clientX - dragStartX;
                 const newX = wrapX(dragStartPosX + dx);
                 gsap.set(row, { x: newX });
             });
 
-            track.addEventListener('pointerup', (e) => {
-                if (!track.hasPointerCapture(e.pointerId)) return;
-                track.releasePointerCapture(e.pointerId);
-                track.style.cursor = 'grab';
+            window.addEventListener('mouseup', () => {
+                if (!isDragging) return;
+                isDragging                     = false;
+                document.body.style.userSelect = '';
+                track.style.cursor             = 'grab';
                 if (!isHovered) startTween(gsap.getProperty(row, 'x'));
             });
         });

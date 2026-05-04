@@ -161,7 +161,7 @@ function runPhase3setup() {
     document.body.appendChild(nav);
 
     /* wydłuż wrapper — daje przestrzeń na rozwinięcie video + dwell na pełnym ekranie */
-    document.querySelector('.hero-scroll-wrap').style.height = '180vh';
+    document.querySelector('.hero-scroll-wrap').style.height = '180vh'; /* ~40vh dwell na pełnym ekranie */
 
     /* ── overlay ── */
     const overlay = document.createElement('div');
@@ -246,8 +246,9 @@ function runPhase3setup() {
     }
 
     /* ── time-based animacja haseł ────────────────────────── */
-    let textsStarted = false;
-    let textTl       = null;   /* referencja do aktywnego timeline — do ubicia przy scroll-back */
+    let textsStarted     = false;
+    let textTl           = null;
+    let fullscreenLocked = false;
 
     const layers = [layer1, layer2, layer3];
 
@@ -299,15 +300,22 @@ function runPhase3setup() {
             scrub:   0.8,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
+                if (fullscreenLocked) {
+                    nav.classList.add('nav--film');
+                    return;
+                }
                 if (self.progress >= 0.5) {
                     nav.classList.add('nav--film');
                     if (!textsStarted) {
-                        textsStarted = true;
+                        textsStarted     = true;
+                        fullscreenLocked = true;
+                        /* odepnij overlay od scruba — nie może się już zmniejszyć */
+                        gsap.set(overlay, { top: 0, left: 0, width: vw, height: vh });
+                        gsap.killTweensOf(overlay);
                         startTextAnimations();
                     }
                 } else {
                     nav.classList.remove('nav--film');
-                    /* box skurczył się z powrotem — ukryj nagłówki i zresetuj */
                     if (textsStarted || textTl) resetTexts();
                 }
             },
@@ -330,6 +338,7 @@ function runPhase3setup() {
                     width:    vw + 'px',
                     height:   vh + 'px',
                 });
+                if (textsStarted || textTl) resetTexts();
             },
         },
     });
@@ -344,6 +353,9 @@ function runPhase3setup() {
 
     /* pad timeline do 1.0 s */
     mainTl.to({}, { duration: 0.5 }, 0.5);
+
+    /* odblokuj scroll dopiero gdy K3 jest gotowe (ScrollTrigger aktywny) */
+    window.dispatchEvent(new CustomEvent('hero:headlineVisible'));
 }
 
 /* ────────────────────────────────────────────────────────
@@ -395,7 +407,7 @@ function runPhase3setup() {
        Nie używa transform:scale — zero pikselozy.
     */
     function jump(s, tIn, tOut) {
-        const isMd = s.size === 240;
+        const numSize = '64px';
 
         /* ── wejście do centrum ── */
         lbTl.to(s.id, {
@@ -404,7 +416,7 @@ function runPhase3setup() {
             duration: D, ease: 'power2.inOut',
         }, tIn);
         /* powiększ font – bez skalowania */
-        lbTl.to(`${s.id} .lb__num`,     { fontSize: isMd ? '56px' : '52px', duration: D }, tIn);
+        lbTl.to(`${s.id} .lb__num`,     { fontSize: numSize, duration: D }, tIn);
         lbTl.to(`${s.id} .lb__unit-sm`, { fontSize: '26px', duration: D }, tIn);
         lbTl.to(`${s.id} .lb__desc`,    { fontSize: '17px', duration: D }, tIn);
 

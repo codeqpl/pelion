@@ -13,18 +13,28 @@
     ── */
     if (!reduced) {
         const lenis = new Lenis({
-            duration:       1.1,
-            easing:         t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smoothTouch:    false,   /* natywny scroll na mobile */
+            duration:        1.1,
+            easing:          t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothTouch:     false,
             touchMultiplier: 2,
         });
 
-        /* Lenis → GSAP ScrollTrigger — każdy tick Lenisa
-           aktualizuje wszystkie aktywne ScrollTriggery         */
-        lenis.on('scroll', ScrollTrigger.update);
+        /* Zablokuj scroll podczas animacji K1→K2 hero.
+           main.js wyśle 'hero:headlineVisible' gdy nagłówek
+           będzie w pełni widoczny — wtedy odblokuj.          */
+        lenis.stop();
+        window.addEventListener('hero:headlineVisible',
+            () => lenis.start(), { once: true });
 
+        lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add(time => lenis.raf(time * 1000));
-        gsap.ticker.lagSmoothing(0);   /* wyłącz kompensację lagów GSAP */
+        gsap.ticker.lagSmoothing(0);
+    } else {
+        /* Bez Lenis — blokada przez CSS overflow */
+        document.documentElement.style.overflow = 'hidden';
+        window.addEventListener('hero:headlineVisible', () => {
+            document.documentElement.style.overflow = '';
+        }, { once: true });
     }
 
     /* ── 2. Scroll-reveal helper ─────────────────────────

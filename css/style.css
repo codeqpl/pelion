@@ -15,7 +15,7 @@ body {
    SCROLL PIN WRAPPER
 ═══════════════════════════════════════════════════════════ */
 .hero-scroll-wrap {
-    height: 100vh;   /* brak scrolla przed K3; runPhase3setup rozszerza do 200vh */
+    height: 150vh;   /* 50vh luzu na scroll podczas K1→K2; K3 ustawia docelową wysokość */
     position: relative;
 }
 
@@ -42,7 +42,7 @@ body {
     justify-content: space-between;
     padding: 20px 100px;
     background: #fff;
-    transition: background 0.4s ease, border-color 0.4s ease;
+    transition: background 0.15s ease, border-color 0.15s ease;
     border-bottom: 0.8px solid transparent;
 }
 
@@ -71,7 +71,7 @@ body {
 .nav__logo { text-decoration: none; }
 .nav__logo-img { height: 30px; width: auto; display: block; }
 .nav__logo svg { height: 30px; width: auto; display: block; }
-.nav__logo-text { transition: fill 0.4s ease; }
+.nav__logo-text { transition: fill 0.15s ease; }
 
 .nav__links {
     display: flex;
@@ -441,7 +441,7 @@ body {
    PELION W LICZBACH — scroll-orbital carousel
 ═══════════════════════════════════════════════════════════ */
 .liczby-wrap {
-    height: 550vh;
+    height: 270vh;
     position: relative;
 }
 
@@ -530,7 +530,7 @@ body {
 /* ── Typography — CENTER ── */
 .lb__big {
     font-family: 'Montserrat', sans-serif;
-    font-size: 65px;
+    font-size: 64px;
     font-weight: 600;
     line-height: 1.2;
     color: #363639;

@@ -387,17 +387,15 @@ function runPhase3setup() {
     document.querySelectorAll('.marki__row').forEach(row => {
         const toLeft = row.classList.contains('marki__row--left');
 
-        /* 1. Sklonuj oryginalne elementy — klon tworzy "drugą połowę" */
+        /* 1. Sklonuj oryginalne elementy */
         Array.from(row.children).forEach(item => {
             const clone = item.cloneNode(true);
             clone.setAttribute('aria-hidden', 'true');
             row.appendChild(clone);
         });
 
-        /* 2. Wyłącz animację CSS — GSAP przejmuje kontrolę */
         row.style.animation = 'none';
 
-        /* 3. Po wyrenderowaniu zmierz dokładną szerokość połowy */
         requestAnimationFrame(() => {
             const halfW = row.scrollWidth / 2;
             const fromX = toLeft ? 0      : -halfW;
@@ -405,22 +403,19 @@ function runPhase3setup() {
 
             gsap.set(row, { x: fromX });
 
-            let tween;
-            let isHovered  = false;
-            let isDragging = false;
-            let dragStartMouseX = 0;
-            let dragStartX      = 0;
+            let tween     = null;
+            let isHovered = false;
 
-            /* Normalizuje x do zakresu [-halfW, 0] (zapętlenie treści) */
+            /* Normalizuje x do zakresu zapętlenia */
             function wrapX(x) {
                 return -(((-x % halfW) + halfW) % halfW);
             }
 
-            /* Tworzy tween od podanego x do końca cyklu, potem pełny repeat */
+            /* Uruchamia animację od currentX do końca cyklu, potem pełna pętla */
             function startTween(currentX) {
                 if (tween) tween.kill();
-                const remaining = Math.abs(currentX - toX);
-                const dur = (remaining / halfW) * 28;
+                const dist = Math.abs(currentX - toX);
+                const dur  = (dist / halfW) * 28;
                 tween = gsap.to(row, {
                     x: toX, duration: dur, ease: 'none',
                     onComplete: () => {
@@ -429,7 +424,7 @@ function runPhase3setup() {
                             { x: fromX },
                             { x: toX, duration: 28, ease: 'none', repeat: -1 }
                         );
-                        if (isHovered || isDragging) tween.pause();
+                        if (isHovered) tween.pause();
                     },
                 });
             }
@@ -439,58 +434,34 @@ function runPhase3setup() {
             const track = row.closest('.marki__track');
             track.style.cursor = 'grab';
 
-            /* Hover — pauza / wznowienie */
-            track.addEventListener('mouseenter', () => {
-                isHovered = true;
-                if (!isDragging) tween.pause();
-            });
-            track.addEventListener('mouseleave', () => {
-                isHovered = false;
-                if (!isDragging) tween.resume();
-            });
+            /* Hover */
+            track.addEventListener('mouseenter', () => { isHovered = true;  tween && tween.pause(); });
+            track.addEventListener('mouseleave', () => { isHovered = false; tween && tween.resume(); });
 
-            /* Drag — start */
-            track.addEventListener('mousedown', (e) => {
-                isDragging      = true;
-                dragStartMouseX = e.clientX;
-                dragStartX      = gsap.getProperty(row, 'x');
-                tween.pause();
+            /* Drag — Pointer Events z capture (niezawodne poza elementem) */
+            let dragStartX    = 0;
+            let dragStartPosX = 0;
+
+            track.addEventListener('pointerdown', (e) => {
+                track.setPointerCapture(e.pointerId);
+                dragStartX    = e.clientX;
+                dragStartPosX = gsap.getProperty(row, 'x');
+                if (tween) tween.pause();
                 track.style.cursor = 'grabbing';
-                e.preventDefault();
             });
 
-            /* Drag — ruch */
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const dx   = e.clientX - dragStartMouseX;
-                const newX = wrapX(dragStartX + dx);
+            track.addEventListener('pointermove', (e) => {
+                if (!track.hasPointerCapture(e.pointerId)) return;
+                const dx   = e.clientX - dragStartX;
+                const newX = wrapX(dragStartPosX + dx);
                 gsap.set(row, { x: newX });
             });
 
-            /* Drag — koniec — wznów animację od aktualnej pozycji */
-            document.addEventListener('mouseup', () => {
-                if (!isDragging) return;
-                isDragging         = false;
-                track.style.cursor = isHovered ? 'grab' : 'grab';
-                const currentX     = gsap.getProperty(row, 'x');
-                if (!isHovered) {
-                    startTween(currentX);
-                } else {
-                    /* zostanie wznowiony przy mouseleave */
-                    if (tween) tween.kill();
-                    tween = gsap.fromTo(row,
-                        { x: currentX },
-                        { x: toX, duration: (Math.abs(currentX - toX) / halfW) * 28, ease: 'none',
-                          repeat: 0,
-                          onComplete: () => {
-                              gsap.set(row, { x: fromX });
-                              tween = gsap.fromTo(row, { x: fromX }, { x: toX, duration: 28, ease: 'none', repeat: -1 });
-                              tween.pause();
-                          }
-                        }
-                    );
-                    tween.pause();
-                }
+            track.addEventListener('pointerup', (e) => {
+                if (!track.hasPointerCapture(e.pointerId)) return;
+                track.releasePointerCapture(e.pointerId);
+                track.style.cursor = 'grab';
+                if (!isHovered) startTween(gsap.getProperty(row, 'x'));
             });
         });
     });

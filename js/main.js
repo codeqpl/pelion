@@ -161,7 +161,7 @@ function runPhase3setup() {
     document.body.appendChild(nav);
 
     /* wydłuż wrapper — daje przestrzeń na rozwinięcie video + dwell na pełnym ekranie */
-    document.querySelector('.hero-scroll-wrap').style.height = '130vh';
+    document.querySelector('.hero-scroll-wrap').style.height = '180vh';
 
     /* ── overlay ── */
     const overlay = document.createElement('div');

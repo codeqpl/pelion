@@ -389,15 +389,48 @@ function runPhase3setup() {
 
     const D = 0.08; /* czas trwania przejścia (8 pp) */
 
-    const lbTl = gsap.timeline({
-        scrollTrigger: {
-            trigger: '.liczby-wrap',
-            start:   'top top',
-            end:     'bottom bottom',
-            scrub:   1,
-            invalidateOnRefresh: true,
-        },
+    let locked     = false;
+    let stProgress = 0;   /* cel (pozycja scrolla) */
+    let tlProgress = 0;   /* aktualny postęp timeline */
+
+    function lockFinalState() {
+        if (locked) return;
+        locked = true;
+        lbST.kill();
+        gsap.ticker.remove(tickLiczby);
+        lbTl.kill();
+        sats.forEach(s => {
+            gsap.set(s.id, { left: s.left, top: s.top, width: s.size, height: s.size, opacity: 1, zIndex: 2 });
+            gsap.set(`${s.id} .lb__num`,     { fontSize: '32px' });
+            gsap.set(`${s.id} .lb__unit-sm`, { fontSize: '14px' });
+            gsap.set(`${s.id} .lb__desc`,    { fontSize: '11px' });
+        });
+        gsap.set('#lb-center', { opacity: 1 });
+    }
+
+    /* różne współczynniki lerp dla kierunków:
+       0.05 w dół  → wolniejsze wskakiwanie
+       0.18 w górę → szybki powrót                */
+    function tickLiczby() {
+        if (locked) return;
+        const delta  = stProgress - tlProgress;
+        const factor = delta >= 0 ? 0.05 : 0.18;
+        tlProgress  += delta * factor;
+        if (tlProgress >= 0.87) { lockFinalState(); return; }
+        lbTl.progress(tlProgress);
+    }
+
+    const lbTl = gsap.timeline({ paused: true });
+
+    const lbST = ScrollTrigger.create({
+        trigger: '.liczby-wrap',
+        start:   'top top',
+        end:     'bottom bottom',
+        invalidateOnRefresh: true,
+        onUpdate: (self) => { stProgress = self.progress; },
     });
+
+    gsap.ticker.add(tickLiczby);
 
     /* lb-center znika gdy pierwszy satelita wchodzi */
     lbTl.to('#lb-center', { opacity: 0, duration: D }, 0.12);
@@ -436,7 +469,13 @@ function runPhase3setup() {
     jump(sats[0], 0.12, 0.32);  /* lb-ul */
     jump(sats[1], 0.32, 0.52);  /* lb-ll */
     jump(sats[2], 0.52, 0.72);  /* lb-lr */
-    jump(sats[3], 0.72, null);  /* lb-ur – pozostaje w centrum */
+    jump(sats[3], 0.72, 0.80);  /* lb-ur – wraca na orbitę */
+
+    /* ── stan końcowy: wszystkie bąble w pełni widoczne ── */
+    sats.forEach(s => {
+        lbTl.to(s.id, { opacity: 1, duration: D, ease: 'power2.out' }, 0.88);
+    });
+    lbTl.to('#lb-center', { opacity: 1, duration: D, ease: 'power2.out' }, 0.88);
 })();
 
 /* ────────────────────────────────────────────────────────

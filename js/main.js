@@ -20,14 +20,15 @@ const cards     = Array.from(strip.querySelectorAll('.card'));
 const videoIdx  = cards.indexOf(videoCard); // 4
 
 /* ────────────────────────────────────────────────────────
-   STAŁE
+   WYMIARY — czytane z DOM, żeby zawsze pasowały do CSS
 ──────────────────────────────────────────────────────── */
-const CARD_W  = 332;
-const GAP     = 32;
-const STEP    = CARD_W + GAP;   // 364 px
+const GAP = 32;
 
-const DROP_SM = Math.round(424 * 0.10);  // 42 px  (karty 3 i 5)
-const DROP_LG = Math.round(424 * 0.20);  // 85 px  (karta 4 – video)
+const cardW  = () => cards[0].getBoundingClientRect().width;
+const cardH  = () => cards[0].getBoundingClientRect().height;
+const step   = () => cardW() + GAP;
+const dropSm = () => Math.round(cardH() * 0.10);
+const dropLg = () => Math.round(cardH() * 0.20);
 
 /* ────────────────────────────────────────────────────────
    OPACITY
@@ -68,11 +69,11 @@ function revealEnteringCards() {
    K1  pozycja startowa — karta 2 na środku
 ──────────────────────────────────────────────────────── */
 function getInitialX() {
-    return window.innerWidth / 2 - (2 * STEP + CARD_W / 2);
+    return window.innerWidth / 2 - (2 * step() + cardW() / 2);
 }
 /* K2  pozycja docelowa — karta 4 (video) na środku */
 function getFinalX() {
-    return window.innerWidth / 2 - (videoIdx * STEP + CARD_W / 2);
+    return window.innerWidth / 2 - (videoIdx * step() + cardW() / 2);
 }
 
 gsap.set(strip, { x: getInitialX() });
@@ -137,9 +138,9 @@ function runPhase2() {
         });
 
         /* ── kafelki opadają delikatnie ── */
-        gsap.to(cards[3], { y: DROP_SM, duration: 0.9, ease: 'power3.inOut', delay: 0.15 });
-        gsap.to(cards[4], { y: DROP_LG, duration: 0.9, ease: 'power3.inOut', delay: 0.15 });
-        gsap.to(cards[5], { y: DROP_SM, duration: 0.9, ease: 'power3.inOut', delay: 0.15 });
+        gsap.to(cards[3], { y: dropSm(), duration: 0.9, ease: 'power3.inOut', delay: 0.15 });
+        gsap.to(cards[4], { y: dropLg(), duration: 0.9, ease: 'power3.inOut', delay: 0.15 });
+        gsap.to(cards[5], { y: dropSm(), duration: 0.9, ease: 'power3.inOut', delay: 0.15 });
 
         /* ── po opadnięciu inicjuj K3 ── */
         gsap.delayedCall(1.1, runPhase3setup);
@@ -480,11 +481,16 @@ function runPhase3setup() {
 
 /* ────────────────────────────────────────────────────────
    MARKI — bezszwowa pętla marquee
-   Klonujemy zawartość każdego wiersza, animacja CSS przesuwa
-   o dokładnie scrollWidth oryginału → zero skoku przy pętli.
+   Hover na SEKCJI zatrzymuje oba rzędy synchronicznie
+   przez miękką zmianę timeScale (nie pause/resume).
 ──────────────────────────────────────────────────────── */
 (function initMarquee() {
-    document.querySelectorAll('.marki__row').forEach(row => {
+    const trackWrap = document.querySelector('.marki__track-wrap');
+    const rows      = Array.from(document.querySelectorAll('.marki__row'));
+    const tweens  = [];        /* współdzielona tablica — jedna pozycja per rząd */
+    let   sectionHovered = false;
+
+    rows.forEach((row, idx) => {
         const toLeft = row.classList.contains('marki__row--left');
 
         /* 1. Sklonuj oryginalne elementy */
@@ -495,6 +501,7 @@ function runPhase3setup() {
         });
 
         row.style.animation = 'none';
+        tweens[idx] = null;
 
         requestAnimationFrame(() => {
             const halfW = row.scrollWidth / 2;
@@ -503,42 +510,34 @@ function runPhase3setup() {
 
             gsap.set(row, { x: fromX });
 
-            let tween     = null;
-            let isHovered = false;
-
-            /* Normalizuje x do zakresu zapętlenia */
             function wrapX(x) {
                 return -(((-x % halfW) + halfW) % halfW);
             }
 
-            /* Uruchamia animację od currentX do końca cyklu, potem pełna pętla */
             function startTween(currentX) {
-                if (tween) tween.kill();
+                if (tweens[idx]) tweens[idx].kill();
                 const dist = Math.abs(currentX - toX);
                 const dur  = (dist / halfW) * 28;
-                tween = gsap.to(row, {
+                tweens[idx] = gsap.to(row, {
                     x: toX, duration: dur, ease: 'none',
+                    timeScale: sectionHovered ? 0 : 1,
                     onComplete: () => {
                         gsap.set(row, { x: fromX });
-                        tween = gsap.fromTo(row,
+                        tweens[idx] = gsap.fromTo(row,
                             { x: fromX },
-                            { x: toX, duration: 28, ease: 'none', repeat: -1 }
+                            { x: toX, duration: 28, ease: 'none', repeat: -1,
+                              timeScale: sectionHovered ? 0 : 1 }
                         );
-                        if (isHovered) tween.pause();
                     },
                 });
             }
 
             startTween(fromX);
 
+            /* Drag */
             const track = row.closest('.marki__track');
             track.style.cursor = 'grab';
 
-            /* Hover */
-            track.addEventListener('mouseenter', () => { isHovered = true;  tween && tween.pause(); });
-            track.addEventListener('mouseleave', () => { isHovered = false; tween && tween.resume(); });
-
-            /* Drag */
             let isDragging    = false;
             let dragStartX    = 0;
             let dragStartPosX = 0;
@@ -547,8 +546,8 @@ function runPhase3setup() {
                 isDragging    = true;
                 dragStartX    = e.clientX;
                 dragStartPosX = gsap.getProperty(row, 'x');
-                tween && tween.pause();
-                track.style.cursor        = 'grabbing';
+                tweens[idx] && tweens[idx].pause();
+                track.style.cursor             = 'grabbing';
                 document.body.style.userSelect = 'none';
                 e.preventDefault();
             });
@@ -565,8 +564,25 @@ function runPhase3setup() {
                 isDragging                     = false;
                 document.body.style.userSelect = '';
                 track.style.cursor             = 'grab';
-                if (!isHovered) startTween(gsap.getProperty(row, 'x'));
+                startTween(gsap.getProperty(row, 'x'));
             });
+        });
+    });
+
+    /* ── Hover pasków — miękka zmiana timeScale dla obu rzędów ── */
+    trackWrap.addEventListener('mouseenter', () => {
+        sectionHovered = true;
+        tweens.forEach(t => {
+            if (!t) return;
+            gsap.to(t, { timeScale: 0, duration: 0.6, ease: 'power2.out', overwrite: true });
+        });
+    });
+
+    trackWrap.addEventListener('mouseleave', () => {
+        sectionHovered = false;
+        tweens.forEach(t => {
+            if (!t) return;
+            gsap.to(t, { timeScale: 1, duration: 0.9, ease: 'power2.inOut', overwrite: true });
         });
     });
 })();
@@ -599,27 +615,6 @@ function runPhase3setup() {
     observer.observe(section);
 })();
 
-/* ────────────────────────────────────────────────────────
-   ACCORDION — sekcja "O nas"
-──────────────────────────────────────────────────────── */
-document.querySelectorAll('.onas__trigger').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const item   = btn.closest('.onas__item');
-        const isOpen = item.classList.contains('onas__item--open');
-
-        document.querySelectorAll('.onas__item').forEach(i => i.classList.remove('onas__item--open'));
-
-        if (!isOpen) {
-            item.classList.add('onas__item--open');
-
-            /* zamień zdjęcie */
-            const photoIdx = item.dataset.photo;
-            document.querySelectorAll('.onas__photo').forEach(img => {
-                img.classList.toggle('onas__photo--active', img.dataset.photo === photoIdx);
-            });
-        }
-    });
-});
 
 /* ────────────────────────────────────────────────────────
    CYTAT — scroll-reveal wyraz po wyrazie

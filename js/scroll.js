@@ -77,22 +77,6 @@
         );
     }
 
-    /* ── 3. Sekcja: O NAS ───────────────────────────────── */
-    reveal(['.onas .sec-title', '.onas .sec-line'], {
-        trigger: '.onas',
-        stagger: 0.12,
-    });
-    reveal('.onas__item', {
-        trigger: '.onas__accordion',
-        start:   'top 82%',
-        stagger: 0.12,
-    });
-    reveal('.onas__right', {
-        trigger: '.onas',
-        start:   'top 65%',
-        y:       40,
-    });
-
     /* ── 4. Sekcja: PELION W LICZBACH 2 (statyczna) ─────── */
     reveal(['.liczby2__head .sec-title', '.liczby2__head .sec-line'], {
         trigger: '.liczby2',
@@ -130,4 +114,48 @@
         stagger: 0.1,
         y:       20,
     });
+
+    /* ── 3. O NAS — kaskadowy scroll ────────────────────── */
+    (function initOnasScroll() {
+        const wrap   = document.querySelector('.onas-scroll-wrap');
+        const items  = Array.from(document.querySelectorAll('.onas__item'));
+        const photos = Array.from(document.querySelectorAll('.onas__photo'));
+        if (!wrap || !items.length) return;
+
+        let current = -1;
+
+        function setActive(idx) {
+            if (idx === current) return;
+            current = idx;
+            items.forEach((item, i) =>
+                item.classList.toggle('onas__item--open', i === idx));
+            photos.forEach((photo, i) =>
+                photo.classList.toggle('onas__photo--active', i === idx));
+        }
+
+        setActive(0);   /* stan startowy: Misja otwarta */
+
+        ScrollTrigger.create({
+            trigger: wrap,
+            start:   'top top',
+            end:     'bottom bottom',
+            invalidateOnRefresh: true,
+            onUpdate(self) {
+                const idx = Math.min(
+                    Math.floor(self.progress * items.length),
+                    items.length - 1
+                );
+                setActive(idx);
+            },
+        });
+    })();
+
+    /* ── 8. NAV — compact po zejściu z hero ─────────────── */
+    const heroWrap = document.querySelector('.hero-scroll-wrap');
+    function updateNavCompact() {
+        const nav = document.querySelector('.nav');
+        if (!nav || !heroWrap) return;
+        nav.classList.toggle('nav--compact', heroWrap.getBoundingClientRect().bottom < 0);
+    }
+    window.addEventListener('scroll', updateNavCompact, { passive: true });
 })();

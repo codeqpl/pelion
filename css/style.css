@@ -1,4 +1,13 @@
 /* ═══════════════════════════════════════════════════════════
+   ZMIENNE
+═══════════════════════════════════════════════════════════ */
+:root {
+    /* 5 kart + 4 przerwy × 32 px + 4 px margines po każdej stronie */
+    --card-w: calc((100vw - 136px) / 5);
+    --card-h: calc(var(--card-w) * 1.2778);   /* proporcja 360 : 460 */
+}
+
+/* ═══════════════════════════════════════════════════════════
    RESET
 ═══════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; }
@@ -42,8 +51,18 @@ body {
     justify-content: space-between;
     padding: 20px 100px;
     background: #fff;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease,
+                padding-top 0.35s ease, padding-bottom 0.35s ease,
+                box-shadow 0.35s ease;
     border-bottom: 0.8px solid transparent;
+}
+
+/* Stan po zejściu z hero — mniejsza wysokość */
+.nav--compact {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
 }
 
 /* Stan na filmie — przezroczyste tło, białe linki */
@@ -182,7 +201,7 @@ body {
     left: 0; right: 0;
     top: 60%;
     transform: translateY(-50%);
-    height: 424px;         /* dokładna wysokość karty */
+    height: var(--card-h); /* dokładna wysokość karty */
     overflow: visible;     /* karty mogą opadać poniżej */
     z-index: 1;
 }
@@ -199,11 +218,11 @@ body {
 }
 
 /* ───────────────────────────────────────────────────────────
-   KARTY  (332 × 424 px, border-radius 20 px)
+   KARTY — dynamiczny rozmiar: zawsze 5 kart na pełną szerokość
 ─────────────────────────────────────────────────────────── */
 .card {
-    width: 332px;
-    height: 424px;
+    width: var(--card-w);
+    height: var(--card-h);
     flex-shrink: 0;
     border-radius: 0;
     overflow: hidden;
@@ -301,13 +320,13 @@ body {
     max-width: 960px;
     margin: 0 auto;
     text-align: center;
-    padding: 160px 40px 0;
+    padding: 200px 40px;
 }
 .pq__inner p {
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(18px, 2.2vw, 36px);
     font-weight: 500;
-    line-height: 1.8;
+    line-height: 2;
     color: #363639;
 }
 .pq__inner strong { font-weight: 700; }
@@ -353,17 +372,23 @@ body {
 /* ═══════════════════════════════════════════════════════════
    O NAS
 ═══════════════════════════════════════════════════════════ */
+.onas-scroll-wrap {
+    height: 425vh;
+    position: relative;
+}
+
 .onas {
+    position: sticky;
+    top: 50px;               /* wysokość compactowego paska nav */
     display: grid;
     grid-template-columns: 1fr 1fr;
     background: #f7f7f7;
-    min-height: 600px;
-    max-height: 100vh;
+    height: calc(100vh - 50px);
     overflow: hidden;
 }
 
 .onas__left {
-    padding: 12% 12% 12% 16%;
+    padding: 10% 12% 12% 16%;
     display: flex;
     flex-direction: column;
     gap: 56px;
@@ -381,24 +406,38 @@ body {
     text-align: left;
     background: none;
     border: none;
-    cursor: pointer;
-    padding: 28px 0 20px;
+    cursor: default;
+    pointer-events: none;
+    padding: 24px 0 18px;
     font-family: 'Montserrat', sans-serif;
     font-size: 28px;
     font-weight: 500;
-    color: #363639;
+    color: #c8c8c8;
     line-height: 1.6;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 20px;
+    transition: color 0.4s ease;
 }
-.onas__trigger::after {
-    content: '+';
-    font-size: 24px;
-    font-weight: 300;
-    transition: transform 0.3s;
+.onas__item--open .onas__trigger {
+    color: #363639;
 }
-.onas__item--open .onas__trigger::after { transform: rotate(45deg); }
+/* trójkąt jak logo-mark Pelion, po lewej, obrócony 45° w prawo */
+.onas__trigger::before {
+    content: '';
+    width: 22px;
+    height: 19px;
+    flex-shrink: 0;
+    background: #009641;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.onas__item--open .onas__trigger::before {
+    opacity: 1;
+    transform: rotate(90deg) scale(1);
+}
 
 .onas__body {
     max-height: 0;
@@ -437,12 +476,17 @@ body {
     opacity: 1;
 }
 
+/* Mapa — wypełnij całą powierzchnię */
+.onas__photo[data-photo="4"] {
+    object-fit: cover;
+    object-position: center center;
+}
+
 /* ═══════════════════════════════════════════════════════════
    PELION W LICZBACH — scroll-orbital carousel
 ═══════════════════════════════════════════════════════════ */
 .liczby-wrap {
-    height: 160vh;
-    position: relative;
+    display: none;
 }
 
 .liczby {
@@ -539,7 +583,7 @@ body {
 .lb__pct  { font-size: 40px; font-weight: 400; }
 .lb__text {
     font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 400;
     line-height: 1.7;
     letter-spacing: 0.04em;
@@ -578,7 +622,7 @@ body {
 ═══════════════════════════════════════════════════════════ */
 .liczby2 {
     background: #fff;
-    padding: 100px 0 120px;
+    padding: 140px 0 160px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -614,6 +658,7 @@ body {
     justify-content: center;
     text-align: center;
     color: #363639;
+    gap: 12px;
 }
 
 /* Obracający się stroke — technika mask+padding tworzy czysty pierścień:
@@ -648,10 +693,9 @@ body {
 
 /* ── CENTER ── */
 .lb2--lg {
-    width: 437px; height: 437px;
-    padding: 32px 36px 24px;
-    gap: 20px;
-    left: 422px; top: 72px;
+    width: 390px; height: 390px;
+    padding: 28px 33px 21px;
+    left: 446px; top: 96px;
     z-index: 3;
 }
 .lb2--lg::before { animation-delay: 0s; }
@@ -661,40 +705,42 @@ body {
    (frozen w tym miejscu gdy animation-play-state: paused)
 ── */
 #lb2-ul {
-    width: 287px; height: 287px;
-    padding: 22px 18px; gap: 8px;
-    left: 44px; top: 12px;
+    width: 298px; height: 298px;
+    padding: 23px 19px;
+    left: 43px; top: 55px;
     z-index: 4;
 }
 #lb2-ul::before { animation-delay: -1.5s; } /* ≈ 90° */
 
 #lb2-ur {
-    width: 234px; height: 234px;
-    padding: 18px 14px; gap: 6px;
-    left: 1040px; top: 8px;
+    width: 229px; height: 229px;
+    padding: 18px 14px;
+    left: 966px; top: 51px;
     z-index: 4;
 }
 #lb2-ur::before { animation-delay: -3s; }   /* ≈ 180° */
 
 #lb2-ll {
-    width: 235px; height: 235px;
-    padding: 18px 14px; gap: 6px;
-    left: 180px; top: 370px;
+    width: 247px; height: 247px;
+    padding: 19px 15px;
+    left: 194px; top: 376px;
     z-index: 2;
 }
 #lb2-ll::before { animation-delay: -4.5s; } /* ≈ 270° */
 
 #lb2-lr {
-    width: 315px; height: 315px;
-    padding: 22px 18px; gap: 8px;
-    left: 876px; top: 278px;
+    width: 299px; height: 299px;
+    padding: 21px 17px;
+    left: 852px; top: 302px;
     z-index: 2;
 }
 #lb2-lr::before { animation-delay: -2s; }   /* ≈ 120° */
 
 /* Większe liczby w satelitach lb2 */
 .lb2:not(.lb2--lg) .lb__num  { font-size: 44px; }
-.lb2:not(.lb2--lg) .lb__desc { font-size: 13px; }
+.lb2:not(.lb2--lg) .lb__desc { font-size: 15px; }
+
+#lb2-ll .lb__num { font-size: 42px; }
 
 /* ═══════════════════════════════════════════════════════════
    MARKI BUDUJĄCE WARTOŚĆ
@@ -1054,6 +1100,10 @@ body {
    RESPONSIVE
 ═══════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
+    :root {
+        --card-w: 332px;   /* stały rozmiar na mobile; scale() skaluje całość */
+    }
+
     .nav { padding: 16px 24px; }
     .nav__links { display: none; }
 

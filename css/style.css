@@ -1180,8 +1180,8 @@ body {
     min-width: 0;
 }
 
-.hero__col--left  { padding-top: clamp(24px, 4vh, 44px); }
-.hero__col--right { padding-top: clamp(10px, 1.5vh, 16px); }
+.hero__col--left  { padding-top: clamp(24px, 4vh, 44px); align-items: flex-end; }
+.hero__col--right { padding-top: clamp(10px, 1.5vh, 16px); align-items: flex-end; }
 
 /* ── Oprawki zdjęć ── */
 .hero__img-wrap {

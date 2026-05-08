@@ -1159,38 +1159,41 @@ body {
 /* ── Nagłówek wyrównany do lewej w kontekście gridu ── */
 .hero__grid .hero__h1 { text-align: left; }
 
-/* ── Siatka zdjęć (20% większa niż oryginał z Figmy) ── */
+/* ── Siatka zdjęć — wypełnia całą wolną przestrzeń ──
+   CSS Grid z proporcjami kolumn wprost z Figmy (265 : 359 : 261).
+   Kolumny skalują się razem z dostępną szerokością.
+── */
 .hero__photo-grid {
     flex: 1;
     min-width: 0;
-    display: flex;
-    gap: clamp(17px, 1.9vw, 29px);
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 265fr 359fr 261fr;
+    gap: clamp(14px, 1.6vw, 24px);
+    align-items: start;
     overflow: visible;
 }
 
 .hero__col {
     display: flex;
     flex-direction: column;
-    gap: clamp(14px, 1.4vw, 22px);
-    flex-shrink: 0;
+    gap: clamp(12px, 1.2vw, 18px);
+    min-width: 0;
 }
 
-.hero__col--left  { padding-top: clamp(29px, 4.8vh, 53px); }
-.hero__col--right { padding-top: clamp(12px, 1.8vh, 19px); }
+.hero__col--left  { padding-top: clamp(24px, 4vh, 44px); }
+.hero__col--right { padding-top: clamp(10px, 1.5vh, 16px); }
 
 /* ── Oprawki zdjęć ── */
 .hero__img-wrap {
     overflow: hidden;
     background: #e8e5e0;
-    flex-shrink: 0;
 }
 
-/* Proporcje z Figmy ×1.2 (265×204 / 207×207 / 261×271 / 213×196) */
-.hero__img-wrap--a { width: clamp(168px, 17.4vw, 252px); aspect-ratio: 265 / 204; }
-.hero__img-wrap--b { width: clamp(132px, 13.3vw, 194px); aspect-ratio: 1 / 1; }
-.hero__img-wrap--d { width: clamp(166px, 17.0vw, 247px); aspect-ratio: 261 / 271; }
-.hero__img-wrap--e { width: clamp(134px, 13.8vw, 202px); aspect-ratio: 213 / 196; }
+/* Pełna szerokość kolumny + proporcje z Figmy */
+.hero__img-wrap--a { width: 100%;    aspect-ratio: 265 / 204; }
+.hero__img-wrap--b { width: 78.1%;  aspect-ratio: 1 / 1; }      /* 207/265 */
+.hero__img-wrap--d { width: 100%;    aspect-ratio: 261 / 271; }
+.hero__img-wrap--e { width: 81.6%;  aspect-ratio: 213 / 196; }  /* 213/261 */
 
 .hero__img {
     width: 100%;
@@ -1199,9 +1202,10 @@ body {
     display: block;
 }
 
-/* ── Karta wideo ×1.2 — nadpisuje --card-w / --card-h ── */
+/* ── Karta wideo — wypełnia kolumnę z proporcją Figmy (359:523) ── */
 .hero__video-card {
-    width:  clamp(192px, 22.6vw, 329px) !important;
-    height: clamp(276px, 32.9vw, 480px) !important;
+    width:  100% !important;
+    height: auto !important;
+    aspect-ratio: 359 / 523;
     flex-shrink: 0;
 }

@@ -10,6 +10,8 @@
 
 gsap.registerPlugin(ScrollTrigger);
 
+const _pelionStartTime = performance.now();
+
 /* ────────────────────────────────────────────────────────
    ELEMENTY
 ──────────────────────────────────────────────────────── */
@@ -354,6 +356,32 @@ function runPhase3setup() {
 
     /* pad timeline do 1.0 s */
     mainTl.to({}, { duration: 0.5 }, 0.5);
+
+    /* ── 10 s auto-zoom timer ───────────────────────────────
+       Jeśli użytkownik nie scrolluje przez 10 s od załadowania
+       strony, wideo automatycznie powiększa się na cały ekran.
+       Timer resetuje się przy pierwszym scrollu użytkownika.
+    ── */
+    const elapsed   = performance.now() - _pelionStartTime;
+    const remaining = Math.max(0, 10000 - elapsed);
+
+    let autoZoomTimer = setTimeout(function triggerAutoZoom() {
+        if (fullscreenLocked) return;
+        fullscreenLocked = true;
+        textsStarted     = true;
+        nav.classList.add('nav--film');
+        gsap.killTweensOf(overlay);
+        gsap.to(overlay, { top: 0, left: 0, width: vw, height: vh, duration: 1.2, ease: 'power2.inOut' });
+        gsap.to(cards.filter(c => c !== videoCard), { opacity: 0, duration: 0.8 });
+        gsap.to(headline, { opacity: 0, duration: 0.8 });
+        gsap.delayedCall(1.2, startTextAnimations);
+    }, remaining);
+
+    window.addEventListener('scroll', function cancelAutoZoom() {
+        clearTimeout(autoZoomTimer);
+        autoZoomTimer = null;
+        window.removeEventListener('scroll', cancelAutoZoom);
+    }, { passive: true });
 
     /* odblokuj scroll dopiero gdy K3 jest gotowe (ScrollTrigger aktywny) */
     window.dispatchEvent(new CustomEvent('hero:headlineVisible'));

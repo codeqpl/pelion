@@ -3,13 +3,10 @@
  *
  * Brak animacji wjazdu (K1→K2) — grid widoczny od razu.
  * K3: wideo rośnie do pełnego ekranu przy scrollu
- *     lub automatycznie po 10 s od załadowania strony.
- * Timer 10 s resetuje się jeśli użytkownik zacznie scrollować.
+ *     lub automatycznie po 20 s braku aktywności.
  */
 
 gsap.registerPlugin(ScrollTrigger);
-
-const _pelionStartTime = performance.now();
 
 const videoCard  = document.getElementById('videoCard');
 const heroText   = document.getElementById('heroText');
@@ -214,15 +211,14 @@ function runPhase3setup() {
         { opacity: 0, ease: 'none', duration: 0.5 }, 0);
     mainTl.to({}, { duration: 0.5 }, 0.5);
 
-    /* ── 10 s auto-zoom timer ───────────────────────────────
-       Jeśli użytkownik nie scrolluje przez 10 s od załadowania
-       strony, wideo automatycznie powiększa się na cały ekran.
-       Timer resetuje się przy pierwszym scrollu.
+    /* ── 20 s inactivity auto-zoom ─────────────────────────────
+       Brak aktywności użytkownika przez 20 s (mysz, scroll, klik,
+       dotyk) → wideo automatycznie powiększa się na cały ekran.
+       Każde zdarzenie aktywności resetuje timer od nowa.
     ── */
-    const elapsed   = performance.now() - _pelionStartTime;
-    const remaining = Math.max(0, 10000 - elapsed);
+    let inactivityTimer = null;
 
-    let autoZoomTimer = setTimeout(function triggerAutoZoom() {
+    function triggerAutoZoom() {
         if (fullscreenLocked) return;
         fullscreenLocked = true;
         textsStarted     = true;
@@ -231,13 +227,18 @@ function runPhase3setup() {
         gsap.to(overlay, { top: 0, left: 0, width: vw, height: vh, duration: 1.2, ease: 'power2.inOut' });
         gsap.to(elementsToFade, { opacity: 0, duration: 0.8 });
         gsap.delayedCall(1.2, startTextAnimations);
-    }, remaining);
+    }
 
-    window.addEventListener('scroll', function cancelAutoZoom() {
-        clearTimeout(autoZoomTimer);
-        autoZoomTimer = null;
-        window.removeEventListener('scroll', cancelAutoZoom);
-    }, { passive: true });
+    function resetInactivityTimer() {
+        if (fullscreenLocked) return;
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(triggerAutoZoom, 20000);
+    }
+
+    ['mousemove', 'scroll', 'click', 'touchstart', 'keydown'].forEach(evt =>
+        window.addEventListener(evt, resetInactivityTimer, { passive: true })
+    );
+    resetInactivityTimer();
 }
 
 /* ────────────────────────────────────────────────────────

@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - hero-v2
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-src
+
+      - name: Checkout hero-v2
+        uses: actions/checkout@v4
+        with:
+          ref: hero-v2
+          path: hero-v2-src
+
+      - name: Prepare deploy directory
+        run: |
+          mkdir -p deploy/hero-v2
+
+          rsync -av \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            --exclude='.claude' \
+            --exclude='.github' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            main-src/ deploy/
+
+          rsync -av \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            --exclude='.claude' \
+            --exclude='.github' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            hero-v2-src/ deploy/hero-v2/
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
+          publish_branch: gh-pages
+          force_orphan: true

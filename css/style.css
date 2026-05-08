@@ -1182,7 +1182,7 @@ body {
 .hero__img-wrap--a { width: 100%;    aspect-ratio: 265 / 204; }
 .hero__img-wrap--b { width: 78.1%;  aspect-ratio: 1 / 1; }      /* 207/265 */
 .hero__img-wrap--d { width: 100%;    aspect-ratio: 261 / 271; }
-.hero__img-wrap--e { width: 81.6%;  aspect-ratio: 213 / 196; }  /* 213/261 */
+.hero__img-wrap--e { width: 81.6%;  aspect-ratio: 213 / 196; align-self: flex-start; }  /* 213/261 — przyklejone do lewej (video) */
 
 .hero__img {
     width: 100%;

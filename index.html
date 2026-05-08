@@ -11,24 +11,13 @@
 </head>
 <body>
 
-<!--
-  ANIMACJA HERO (3 klatki z Figmy):
-
-  K1 → load:   5 zdjęć wyśrodkowanych, bez nagłówka
-  K2 → 2s:    pasek przesuwa się w lewo,
-               nagłówek fade-in,
-               3 środkowe karty schodzą w dół (y: 0→32 / 0→64)
-  K3 → scroll: środkowa karta (video) skaluje się do pełnego ekranu
-               pojawia się "BUDUJEMY POLSKĄ GOSPODARKĘ"
--->
-
 <!-- ══ SCROLL PIN WRAPPER – daje przestrzeń na scroll-scrub ══ -->
 <div class="hero-scroll-wrap">
 <section class="hero">
 
     <!-- NAV -->
     <nav class="nav">
-        <a href="#" class="nav__logo">
+        <a href="javascript:void(0)" class="nav__logo">
             <svg width="158" height="30" viewBox="0 0 158 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path class="nav__logo-text" d="M87.4448 15.3683C87.206 15.2256 86.9672 15.0987 86.7124 14.9877C86.4577 14.8766 86.203 14.7656 85.9323 14.6546C84.5313 14.1471 82.8755 13.8933 80.965 13.8933C79.6436 13.8933 78.4495 14.0202 77.351 14.274C77.1758 14.3215 77.0007 14.3533 76.8256 14.4008C75.9499 14.6387 75.1539 14.9718 74.4374 15.4C73.514 15.9551 72.8135 16.6213 72.3518 17.4143C71.8901 18.2073 71.6513 19.1113 71.6513 20.1422C71.6513 22.1881 72.5906 23.7583 74.4693 24.8685C75.329 25.376 76.3002 25.7567 77.3828 25.9946C78.4654 26.2483 79.6595 26.3752 80.965 26.3752C82.2546 26.3752 83.4487 26.2483 84.5313 25.9946C85.6139 25.7408 86.5692 25.3602 87.4289 24.8685C88.3841 24.3134 89.1006 23.6473 89.5623 22.8543C90.0399 22.0771 90.2787 21.1731 90.2787 20.1422C90.2628 18.0645 89.3235 16.4627 87.4448 15.3683ZM88.9255 26.6924C87.8428 27.2951 86.6328 27.755 85.2955 28.0722C83.9581 28.3736 82.4775 28.5322 80.8854 28.5322C79.2933 28.5322 77.8286 28.3736 76.4912 28.0722C75.1539 27.755 73.928 27.2951 72.8453 26.6765C71.5557 25.9153 70.6005 24.9954 69.9477 23.9169C69.3109 22.8384 68.9766 21.5855 68.9766 20.1739C68.9766 18.7465 69.3109 17.4936 69.9796 16.3992C70.2025 16.0344 70.4572 15.6855 70.7597 15.3683C71.3488 14.718 72.0971 14.1312 72.9727 13.6396C73.2752 13.4651 73.5936 13.3065 73.912 13.1479C74.2305 13.0052 74.5648 12.8624 74.9151 12.7355C76.6823 12.0853 78.7042 11.7681 80.9809 11.7681C84.1969 11.7681 86.8557 12.3866 88.9891 13.6237C90.2947 14.385 91.2818 15.3207 91.9345 16.4151C92.5873 17.5094 92.9216 18.7624 92.9216 20.1739C92.9216 21.5855 92.5873 22.8384 91.9186 23.9328C91.2658 24.9954 90.2628 25.9311 88.9255 26.6924Z" fill="#363639"/>
                 <path class="nav__logo-text" d="M39.4906 13.8933C38.3443 13.8933 37.2935 13.9885 36.3224 14.1946C36.1632 14.2264 36.004 14.2581 35.8607 14.3057C35.0805 14.496 34.3482 14.7656 33.6795 15.1145C32.7879 15.5745 32.0715 16.1296 31.5302 16.7798C31.0207 17.3984 30.6864 18.1121 30.5112 18.9209H48.2153C48.1038 18.0645 47.7854 17.3191 47.276 16.6688C46.7346 15.9868 45.9864 15.4317 45.0152 14.9876C44.7923 14.8925 44.5853 14.7973 44.3465 14.7022C44.1236 14.607 43.8848 14.5277 43.646 14.4643C42.4201 14.0678 41.035 13.8774 39.4906 13.8933ZM30.4316 21.0303C30.4953 21.5061 30.5908 21.9502 30.7341 22.3467C30.8933 22.7749 31.1003 23.1873 31.355 23.5521C32.6765 25.4394 35.3512 26.3752 39.3633 26.3752C41.0827 26.3752 42.5793 26.1849 43.837 25.8201C45.0948 25.4394 46.0978 24.8685 46.8779 24.1072L46.9098 24.0755H46.9575H49.8711H50.0462L49.9666 24.2182C49.4253 25.0271 48.7725 25.7091 48.0402 26.28C47.2919 26.851 46.464 27.2792 45.5247 27.5964C45.2699 27.6757 45.0152 27.755 44.7605 27.8343C44.5057 27.9136 44.2351 27.9771 43.9644 28.0405C42.5634 28.3577 41.0031 28.5163 39.2996 28.5163C37.6597 28.5163 36.1632 28.3736 34.8417 28.0722C34.6348 28.0246 34.4119 27.9771 34.2049 27.9136C33.1382 27.6281 32.1829 27.2316 31.355 26.7241C30.1769 25.9945 29.2853 25.0905 28.6963 23.9962C28.1072 22.9018 27.8047 21.633 27.8047 20.1739C27.8047 17.3508 29.0943 15.1621 31.6575 13.6395C32.7402 13.0051 33.9342 12.5293 35.2397 12.2121C36.5453 11.8949 37.9781 11.7363 39.5225 11.7363C41.0668 11.7363 42.4838 11.8791 43.7734 12.1487C45.0629 12.4342 46.2252 12.8465 47.26 13.4016C47.6262 13.592 47.9765 13.7981 48.2949 14.0202C48.6133 14.2422 48.8999 14.4801 49.1705 14.718C50.5397 15.9868 51.2243 17.6046 51.2243 19.5871V20.9193V21.0145H51.1288H30.4316V21.0303Z" fill="#363639"/>
@@ -61,71 +50,58 @@
         </div>
     </nav>
 
-    <!-- NAGŁÓWEK K2 – niewidoczny na start -->
-    <div class="hero__headline" id="heroHeadline">
-        <p class="hero__h1">Dbamy o jakość<br>i długość życia</p>
-        <div class="hero__underline"></div>
-    </div>
+    <!-- HERO GRID — hero-v2: od razu gotowy stan docelowy (bez animacji wjazdu) -->
+    <div class="hero__grid">
 
-    <!-- PASEK ZDJĘĆ -->
-    <div class="hero__viewport">
-        <div class="hero__strip" id="heroStrip">
+        <!-- Lewa kolumna: tekst -->
+        <div class="hero__text" id="heroText">
+            <div class="hero__text-top">
+                <p class="hero__h1">Dbamy o jakość<br>i długość życia</p>
+                <div class="hero__underline"></div>
+            </div>
+            <p class="hero__sub">Zarządzamy piątą największą w Europie siecią aptek, a trzecią w całej Unii Europejskiej. Konsekwentnie rozwijamy linie biznesowe w Polsce, na Litwie i w Szwecji oraz budujemy wartość opartą na wiedzy i partnerstwie.</p>
+        </div>
 
-            <!-- Karta 0 -->
-            <div class="card" data-idx="0">
-                <img src="images/hero1.png" alt="Mężczyzna z dzieckiem" class="card__img">
+        <!-- Prawa kolumna: siatka zdjęć zgodna z Figmą -->
+        <div class="hero__photo-grid">
+
+            <!-- Kolumna lewa siatki -->
+            <div class="hero__col hero__col--left">
+                <div class="hero__img-wrap hero__img-wrap--a">
+                    <img src="images/hero1.png" alt="Mężczyzna z dzieckiem" class="hero__img">
+                </div>
+                <div class="hero__img-wrap hero__img-wrap--b">
+                    <img src="images/hero2.png" alt="Starszy mężczyzna ze smartfonem" class="hero__img">
+                </div>
             </div>
 
-            <!-- Karta 1 -->
-            <div class="card" data-idx="1">
-                <img src="images/hero2.png" alt="Para seniorów" class="card__img">
+            <!-- Kolumna środkowa: VIDEO -->
+            <div class="hero__col hero__col--center">
+                <div class="card card--video hero__video-card" id="videoCard">
+                    <video class="card__video" autoplay muted loop playsinline>
+                        <source src="wideo/pelion_scalone_wideo.mp4" type="video/mp4">
+                    </video>
+                    <button class="card__play" aria-label="Pauza/Odtwórz">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <rect x="2" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
+                            <rect x="10" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <!-- Karta 2 -->
-            <div class="card" data-idx="2">
-                <img src="images/hero3.png" alt="Starszy mężczyzna ze smartfonem" class="card__img">
+            <!-- Kolumna prawa siatki -->
+            <div class="hero__col hero__col--right">
+                <div class="hero__img-wrap hero__img-wrap--d">
+                    <img src="images/hero3.png" alt="Para seniorów" class="hero__img">
+                </div>
+                <div class="hero__img-wrap hero__img-wrap--e">
+                    <img src="images/hero4.png" alt="Kobieta z dziewczynką" class="hero__img">
+                </div>
             </div>
 
-            <!-- Karta 3: schodzi w dół 32px w K2 -->
-            <div class="card card--down-sm" data-idx="3">
-                <img src="images/hero4.png" alt="Kobieta z dziewczynką" class="card__img">
-            </div>
-
-            <!-- Karta 4: VIDEO — schodzi w dół 64px w K2, potem zoom do pełnego ekranu -->
-            <div class="card card--video card--down-lg" id="videoCard" data-idx="4">
-                <video class="card__video" autoplay muted loop playsinline>
-                    <source src="wideo/pelion_scalone_wideo.mp4" type="video/mp4">
-                </video>
-                <button class="card__play" aria-label="Pauza/Odtwórz">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <rect x="2" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
-                        <rect x="10" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Karta 5: schodzi w dół 32px w K2 -->
-            <div class="card card--down-sm" data-idx="5">
-                <img src="images/hero5.png" alt="Mężczyzna z dzieckiem" class="card__img">
-            </div>
-
-            <!-- Karta 6 -->
-            <div class="card" data-idx="6">
-                <img src="images/hero6.png" alt="Kobieta z psem" class="card__img">
-            </div>
-
-            <!-- Karta 7 -->
-            <div class="card" data-idx="7">
-                <img src="images/hero1.png" alt="Mężczyzna z dzieckiem" class="card__img">
-            </div>
-
-            <!-- Karta 8 -->
-            <div class="card" data-idx="8">
-                <img src="images/hero2.png" alt="Para seniorów" class="card__img">
-            </div>
-
-        </div><!-- /hero__strip -->
-    </div><!-- /hero__viewport -->
+        </div><!-- /hero__photo-grid -->
+    </div><!-- /hero__grid -->
 
     <!-- TEKST WIDEO K3 – pojawia się gdy wideo wypełnia ekran -->
     <div class="hero__video-text" id="heroVideoText">

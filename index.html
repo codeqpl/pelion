@@ -50,10 +50,10 @@
         </div>
     </nav>
 
-    <!-- HERO GRID — hero-v2: od razu gotowy stan docelowy (bez animacji wjazdu) -->
+    <!-- HERO GRID — 4 kolumny: nagłówek + 3 kolumny zdjęć -->
     <div class="hero__grid">
 
-        <!-- Lewa kolumna: tekst -->
+        <!-- Kolumna 1: Nagłówek (szersza) -->
         <div class="hero__text" id="heroText">
             <div class="hero__text-top">
                 <p class="hero__h1">Dbamy o jakość<br>i długość życia</p>
@@ -62,45 +62,41 @@
             <p class="hero__sub">Zarządzamy piątą największą w Europie siecią aptek, a trzecią w całej Unii Europejskiej. Konsekwentnie rozwijamy linie biznesowe w Polsce, na Litwie i w Szwecji oraz budujemy wartość opartą na wiedzy i partnerstwie.</p>
         </div>
 
-        <!-- Prawa kolumna: siatka zdjęć zgodna z Figmą -->
-        <div class="hero__photo-grid">
-
-            <!-- Kolumna lewa siatki -->
-            <div class="hero__col hero__col--left">
-                <div class="hero__img-wrap hero__img-wrap--a">
-                    <img src="images/hero1.png" alt="Mężczyzna z dzieckiem" class="hero__img">
-                </div>
-                <div class="hero__img-wrap hero__img-wrap--b">
-                    <img src="images/hero2.png" alt="Starszy mężczyzna ze smartfonem" class="hero__img">
-                </div>
+        <!-- Kolumna 2: Zdjęcia lewe -->
+        <div class="hero__col hero__col--left">
+            <div class="hero__img-wrap hero__img-wrap--a">
+                <img src="images/hero1.png" alt="Mężczyzna z dzieckiem" class="hero__img">
             </div>
-
-            <!-- Kolumna środkowa: VIDEO -->
-            <div class="hero__col hero__col--center">
-                <div class="card card--video hero__video-card" id="videoCard">
-                    <video class="card__video" autoplay muted loop playsinline>
-                        <source src="wideo/pelion_scalone_wideo.mp4" type="video/mp4">
-                    </video>
-                    <button class="card__play" aria-label="Pauza/Odtwórz">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <rect x="2" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
-                            <rect x="10" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
-                        </svg>
-                    </button>
-                </div>
+            <div class="hero__img-wrap hero__img-wrap--b">
+                <img src="images/hero2.png" alt="Starszy mężczyzna ze smartfonem" class="hero__img">
             </div>
+        </div>
 
-            <!-- Kolumna prawa siatki -->
-            <div class="hero__col hero__col--right">
-                <div class="hero__img-wrap hero__img-wrap--d">
-                    <img src="images/hero3.png" alt="Para seniorów" class="hero__img">
-                </div>
-                <div class="hero__img-wrap hero__img-wrap--e">
-                    <img src="images/hero4.png" alt="Kobieta z dziewczynką" class="hero__img">
-                </div>
+        <!-- Kolumna 3: VIDEO -->
+        <div class="hero__col hero__col--center">
+            <div class="card card--video hero__video-card" id="videoCard">
+                <video class="card__video" autoplay muted loop playsinline>
+                    <source src="wideo/pelion_scalone_wideo.mp4" type="video/mp4">
+                </video>
+                <button class="card__play" aria-label="Pauza/Odtwórz">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <rect x="2" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
+                        <rect x="10" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
+                    </svg>
+                </button>
             </div>
+        </div>
 
-        </div><!-- /hero__photo-grid -->
+        <!-- Kolumna 4: Zdjęcia prawe -->
+        <div class="hero__col hero__col--right">
+            <div class="hero__img-wrap hero__img-wrap--d">
+                <img src="images/hero3.png" alt="Para seniorów" class="hero__img">
+            </div>
+            <div class="hero__img-wrap hero__img-wrap--e">
+                <img src="images/hero4.png" alt="Kobieta z dziewczynką" class="hero__img">
+            </div>
+        </div>
+
     </div><!-- /hero__grid -->
 
     <!-- TEKST WIDEO K3 – pojawia się gdy wideo wypełnia ekran -->

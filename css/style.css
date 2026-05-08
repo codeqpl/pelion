@@ -1157,6 +1157,7 @@ body {
     font-weight: 500;
     line-height: 1.8;
     color: #363639;
+    max-width: 600px;
 }
 
 /* ── Nagłówek wyrównany do lewej ── */

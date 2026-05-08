@@ -10,8 +10,6 @@
 
 gsap.registerPlugin(ScrollTrigger);
 
-const _pelionStartTime = performance.now();
-
 /* ────────────────────────────────────────────────────────
    ELEMENTY
 ──────────────────────────────────────────────────────── */
@@ -357,15 +355,14 @@ function runPhase3setup() {
     /* pad timeline do 1.0 s */
     mainTl.to({}, { duration: 0.5 }, 0.5);
 
-    /* ── 10 s auto-zoom timer ───────────────────────────────
-       Jeśli użytkownik nie scrolluje przez 10 s od załadowania
-       strony, wideo automatycznie powiększa się na cały ekran.
-       Timer resetuje się przy pierwszym scrollu użytkownika.
+    /* ── 20 s inactivity auto-zoom ─────────────────────────────
+       Brak aktywności użytkownika przez 20 s (mysz, scroll, klik,
+       dotyk) → wideo automatycznie powiększa się na cały ekran.
+       Każde zdarzenie aktywności resetuje timer od nowa.
     ── */
-    const elapsed   = performance.now() - _pelionStartTime;
-    const remaining = Math.max(0, 10000 - elapsed);
+    let inactivityTimer = null;
 
-    let autoZoomTimer = setTimeout(function triggerAutoZoom() {
+    function triggerAutoZoom() {
         if (fullscreenLocked) return;
         fullscreenLocked = true;
         textsStarted     = true;
@@ -375,13 +372,18 @@ function runPhase3setup() {
         gsap.to(cards.filter(c => c !== videoCard), { opacity: 0, duration: 0.8 });
         gsap.to(headline, { opacity: 0, duration: 0.8 });
         gsap.delayedCall(1.2, startTextAnimations);
-    }, remaining);
+    }
 
-    window.addEventListener('scroll', function cancelAutoZoom() {
-        clearTimeout(autoZoomTimer);
-        autoZoomTimer = null;
-        window.removeEventListener('scroll', cancelAutoZoom);
-    }, { passive: true });
+    function resetInactivityTimer() {
+        if (fullscreenLocked) return;
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(triggerAutoZoom, 20000);
+    }
+
+    ['mousemove', 'scroll', 'click', 'touchstart', 'keydown'].forEach(evt =>
+        window.addEventListener(evt, resetInactivityTimer, { passive: true })
+    );
+    resetInactivityTimer();
 
     /* odblokuj scroll dopiero gdy K3 jest gotowe (ScrollTrigger aktywny) */
     window.dispatchEvent(new CustomEvent('hero:headlineVisible'));

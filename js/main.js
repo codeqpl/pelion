@@ -12,9 +12,6 @@ const videoCard  = document.getElementById('videoCard');
 const heroText   = document.getElementById('heroText');
 const photoWraps = Array.from(document.querySelectorAll('.hero__img-wrap'));
 
-/* Scroll odblokowany od razu — brak K1→K2 */
-window.dispatchEvent(new CustomEvent('hero:headlineVisible'));
-
 /* K3 setup — krótki delay by upewnić się, że layout jest obliczony */
 gsap.delayedCall(0.15, runPhase3setup);
 
@@ -239,6 +236,9 @@ function runPhase3setup() {
         window.addEventListener(evt, resetInactivityTimer, { passive: true })
     );
     resetInactivityTimer();
+
+    /* odblokuj scroll — scroll.js czeka na to zdarzenie żeby uruchomić Lenis */
+    window.dispatchEvent(new CustomEvent('hero:headlineVisible'));
 }
 
 /* ────────────────────────────────────────────────────────

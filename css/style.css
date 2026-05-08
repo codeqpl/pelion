@@ -1156,12 +1156,15 @@ body {
     color: #363639;
 }
 
-/* ── Siatka zdjęć ── */
+/* ── Nagłówek wyrównany do lewej w kontekście gridu ── */
+.hero__grid .hero__h1 { text-align: left; }
+
+/* ── Siatka zdjęć (20% większa niż oryginał z Figmy) ── */
 .hero__photo-grid {
     flex: 1;
     min-width: 0;
     display: flex;
-    gap: clamp(14px, 1.6vw, 24px);
+    gap: clamp(17px, 1.9vw, 29px);
     align-items: flex-start;
     overflow: visible;
 }
@@ -1169,12 +1172,12 @@ body {
 .hero__col {
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 1.2vw, 18px);
+    gap: clamp(14px, 1.4vw, 22px);
     flex-shrink: 0;
 }
 
-.hero__col--left  { padding-top: clamp(24px, 4vh, 44px); }
-.hero__col--right { padding-top: clamp(10px, 1.5vh, 16px); }
+.hero__col--left  { padding-top: clamp(29px, 4.8vh, 53px); }
+.hero__col--right { padding-top: clamp(12px, 1.8vh, 19px); }
 
 /* ── Oprawki zdjęć ── */
 .hero__img-wrap {
@@ -1183,11 +1186,11 @@ body {
     flex-shrink: 0;
 }
 
-/* Proporcje z Figmy (265×204 / 207×207 / 261×271 / 213×196) */
-.hero__img-wrap--a { width: clamp(140px, 14.5vw, 210px); aspect-ratio: 265 / 204; }
-.hero__img-wrap--b { width: clamp(110px, 11.1vw, 162px); aspect-ratio: 1 / 1; }
-.hero__img-wrap--d { width: clamp(138px, 14.2vw, 206px); aspect-ratio: 261 / 271; }
-.hero__img-wrap--e { width: clamp(112px, 11.5vw, 168px); aspect-ratio: 213 / 196; }
+/* Proporcje z Figmy ×1.2 (265×204 / 207×207 / 261×271 / 213×196) */
+.hero__img-wrap--a { width: clamp(168px, 17.4vw, 252px); aspect-ratio: 265 / 204; }
+.hero__img-wrap--b { width: clamp(132px, 13.3vw, 194px); aspect-ratio: 1 / 1; }
+.hero__img-wrap--d { width: clamp(166px, 17.0vw, 247px); aspect-ratio: 261 / 271; }
+.hero__img-wrap--e { width: clamp(134px, 13.8vw, 202px); aspect-ratio: 213 / 196; }
 
 .hero__img {
     width: 100%;
@@ -1196,11 +1199,9 @@ body {
     display: block;
 }
 
-/* ── Karta wideo w gridzie hero-v2 ──
-   Nadpisuje --card-w / --card-h z bazowej klasy .card
-── */
+/* ── Karta wideo ×1.2 — nadpisuje --card-w / --card-h ── */
 .hero__video-card {
-    width:  clamp(160px, 18.8vw, 274px) !important;
-    height: clamp(230px, 27.4vw, 400px) !important;
+    width:  clamp(192px, 22.6vw, 329px) !important;
+    height: clamp(276px, 32.9vw, 480px) !important;
     flex-shrink: 0;
 }

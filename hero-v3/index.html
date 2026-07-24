@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelion – Kariera</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══ SCROLL PIN WRAPPER – daje przestrzeń na scroll-scrub ══ -->
+<div class="hero-scroll-wrap">
+<section class="hero">
+
+    <!-- NAV -->
+    <nav class="nav">
+        <a href="javascript:void(0)" class="nav__logo">
+            <svg width="158" height="30" viewBox="0 0 158 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="nav__logo-text" d="M87.4448 15.3683C87.206 15.2256 86.9672 15.0987 86.7124 14.9877C86.4577 14.8766 86.203 14.7656 85.9323 14.6546C84.5313 14.1471 82.8755 13.8933 80.965 13.8933C79.6436 13.8933 78.4495 14.0202 77.351 14.274C77.1758 14.3215 77.0007 14.3533 76.8256 14.4008C75.9499 14.6387 75.1539 14.9718 74.4374 15.4C73.514 15.9551 72.8135 16.6213 72.3518 17.4143C71.8901 18.2073 71.6513 19.1113 71.6513 20.1422C71.6513 22.1881 72.5906 23.7583 74.4693 24.8685C75.329 25.376 76.3002 25.7567 77.3828 25.9946C78.4654 26.2483 79.6595 26.3752 80.965 26.3752C82.2546 26.3752 83.4487 26.2483 84.5313 25.9946C85.6139 25.7408 86.5692 25.3602 87.4289 24.8685C88.3841 24.3134 89.1006 23.6473 89.5623 22.8543C90.0399 22.0771 90.2787 21.1731 90.2787 20.1422C90.2628 18.0645 89.3235 16.4627 87.4448 15.3683ZM88.9255 26.6924C87.8428 27.2951 86.6328 27.755 85.2955 28.0722C83.9581 28.3736 82.4775 28.5322 80.8854 28.5322C79.2933 28.5322 77.8286 28.3736 76.4912 28.0722C75.1539 27.755 73.928 27.2951 72.8453 26.6765C71.5557 25.9153 70.6005 24.9954 69.9477 23.9169C69.3109 22.8384 68.9766 21.5855 68.9766 20.1739C68.9766 18.7465 69.3109 17.4936 69.9796 16.3992C70.2025 16.0344 70.4572 15.6855 70.7597 15.3683C71.3488 14.718 72.0971 14.1312 72.9727 13.6396C73.2752 13.4651 73.5936 13.3065 73.912 13.1479C74.2305 13.0052 74.5648 12.8624 74.9151 12.7355C76.6823 12.0853 78.7042 11.7681 80.9809 11.7681C84.1969 11.7681 86.8557 12.3866 88.9891 13.6237C90.2947 14.385 91.2818 15.3207 91.9345 16.4151C92.5873 17.5094 92.9216 18.7624 92.9216 20.1739C92.9216 21.5855 92.5873 22.8384 91.9186 23.9328C91.2658 24.9954 90.2628 25.9311 88.9255 26.6924Z" fill="#363639"/>
+                <path class="nav__logo-text" d="M39.4906 13.8933C38.3443 13.8933 37.2935 13.9885 36.3224 14.1946C36.1632 14.2264 36.004 14.2581 35.8607 14.3057C35.0805 14.496 34.3482 14.7656 33.6795 15.1145C32.7879 15.5745 32.0715 16.1296 31.5302 16.7798C31.0207 17.3984 30.6864 18.1121 30.5112 18.9209H48.2153C48.1038 18.0645 47.7854 17.3191 47.276 16.6688C46.7346 15.9868 45.9864 15.4317 45.0152 14.9876C44.7923 14.8925 44.5853 14.7973 44.3465 14.7022C44.1236 14.607 43.8848 14.5277 43.646 14.4643C42.4201 14.0678 41.035 13.8774 39.4906 13.8933ZM30.4316 21.0303C30.4953 21.5061 30.5908 21.9502 30.7341 22.3467C30.8933 22.7749 31.1003 23.1873 31.355 23.5521C32.6765 25.4394 35.3512 26.3752 39.3633 26.3752C41.0827 26.3752 42.5793 26.1849 43.837 25.8201C45.0948 25.4394 46.0978 24.8685 46.8779 24.1072L46.9098 24.0755H46.9575H49.8711H50.0462L49.9666 24.2182C49.4253 25.0271 48.7725 25.7091 48.0402 26.28C47.2919 26.851 46.464 27.2792 45.5247 27.5964C45.2699 27.6757 45.0152 27.755 44.7605 27.8343C44.5057 27.9136 44.2351 27.9771 43.9644 28.0405C42.5634 28.3577 41.0031 28.5163 39.2996 28.5163C37.6597 28.5163 36.1632 28.3736 34.8417 28.0722C34.6348 28.0246 34.4119 27.9771 34.2049 27.9136C33.1382 27.6281 32.1829 27.2316 31.355 26.7241C30.1769 25.9945 29.2853 25.0905 28.6963 23.9962C28.1072 22.9018 27.8047 21.633 27.8047 20.1739C27.8047 17.3508 29.0943 15.1621 31.6575 13.6395C32.7402 13.0051 33.9342 12.5293 35.2397 12.2121C36.5453 11.8949 37.9781 11.7363 39.5225 11.7363C41.0668 11.7363 42.4838 11.8791 43.7734 12.1487C45.0629 12.4342 46.2252 12.8465 47.26 13.4016C47.6262 13.592 47.9765 13.7981 48.2949 14.0202C48.6133 14.2422 48.8999 14.4801 49.1705 14.718C50.5397 15.9868 51.2243 17.6046 51.2243 19.5871V20.9193V21.0145H51.1288H30.4316V21.0303Z" fill="#363639"/>
+                <path class="nav__logo-text" d="M15.6727 8.13621H3.57285V16.6055H15.7205C16.8031 16.6055 17.8061 16.5262 18.7455 16.3835C19.6689 16.2407 20.5127 16.0028 21.2928 15.7015C22.2481 15.3208 22.9645 14.8767 23.4262 14.3375C23.8879 13.7983 24.1267 13.1956 24.1267 12.4819C24.1267 11.0386 23.4262 9.96012 22.0411 9.23056C20.6241 8.50099 18.5067 8.13621 15.6727 8.13621ZM14.9085 18.7783H3.57285V28.0723V28.1675H3.47733H1.00959H0.914062V28.0723V6.05854V5.96338H1.00959H15.4021C23.0282 5.96338 26.8333 8.12035 26.8333 12.4502C26.8333 13.6397 26.4671 14.6706 25.7188 15.5429C24.9705 16.3993 23.872 17.0972 22.3914 17.6364C21.3565 18.017 20.2261 18.3025 18.9684 18.4928C17.7265 18.6832 16.3733 18.7783 14.9085 18.7783Z" fill="#363639"/>
+                <path class="nav__logo-text" d="M62.5117 28.0724V11.8475V11.7365H62.6072H65.1068H65.2024V11.8316V28.0724V28.1675H65.1068H62.6072H62.5117V28.0724ZM65.2024 8.51686V5.97925H62.5117V8.51686H65.2024Z" fill="#363639"/>
+                <path class="nav__logo-text" d="M113.412 28.0722V17.779C113.412 17.097 113.237 16.5102 112.871 16.0027C112.807 15.9234 112.744 15.8441 112.68 15.7648C112.33 15.3683 111.836 15.0194 111.215 14.7339C111.056 14.6546 110.881 14.5911 110.69 14.5118C110.499 14.4484 110.324 14.385 110.133 14.3215C109.13 14.036 107.936 13.8933 106.582 13.8933C105.452 13.8933 104.433 14.0043 103.494 14.2105C102.57 14.4167 101.742 14.7339 101.026 15.1462C99.3701 16.0979 98.5422 17.4618 98.5422 19.2223V28.0722V28.1674H98.4467H95.9471H95.8516V28.0722V12.1963V12.1011H95.9471H98.4467H98.5422V12.1963V14.0202C99.4019 13.2748 100.469 12.7197 101.758 12.339C103.111 11.9425 104.704 11.7363 106.534 11.7363C107.729 11.7363 108.843 11.8315 109.846 12.0059C110.005 12.0377 110.18 12.0694 110.34 12.1011C111.167 12.2756 111.932 12.5135 112.632 12.8148C113.779 13.3065 114.654 13.9409 115.227 14.718C115.8 15.4952 116.103 16.4151 116.103 17.4777V28.0722V28.1674H116.007H113.508H113.412V28.0722Z" fill="#363639"/>
+                <path class="nav__logo-text" d="M54.8555 28.0723V6.05854V5.96338H54.951H57.4506H57.5461V6.05854V28.0723V28.1675H57.4506H54.951H54.8555V28.0723Z" fill="#363639"/>
+                <path class="nav__logo-mark" fill-rule="evenodd" clip-rule="evenodd" d="M141.113 0.650146L149.105 14.4326L157.082 28.215H141.113H125.145L133.121 14.4326L141.113 0.650146Z" fill="#009641"/>
+            </svg>
+        </a>
+        <div class="nav__links">
+            <a href="#" class="nav__link">Kariera</a>
+            <span class="nav__sep">|</span>
+            <a href="#" class="nav__link">Obszary pracy</a>
+            <span class="nav__sep">|</span>
+            <a href="#" class="nav__link">Dlaczego my?</a>
+            <span class="nav__sep">|</span>
+            <a href="#" class="nav__link">Proces rekrutacji</a>
+            <span class="nav__sep">|</span>
+            <a href="#" class="nav__link">FAQ</a>
+            <span class="nav__sep">|</span>
+            <a href="#" class="nav__link">Blog</a>
+        </div>
+        <div class="nav__right">
+            <a href="#" class="nav__cta">Oferty pracy</a>
+            <div class="nav__lang">
+                <span class="is-active">PL</span>
+                <span>EN</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO GRID — 4 kolumny: nagłówek + 3 kolumny zdjęć -->
+    <div class="hero__grid">
+
+        <!-- Kolumna 1: Nagłówek (szersza) -->
+        <div class="hero__text" id="heroText">
+            <div class="hero__text-top">
+                <p class="hero__h1">Dbamy o jakość<br>i długość życia</p>
+                <div class="hero__underline"></div>
+            </div>
+            <p class="hero__sub">Zarządzamy piątą największą w Europie siecią aptek, a trzecią w całej Unii Europejskiej. Konsekwentnie rozwijamy linie biznesowe w Polsce, na Litwie i w Szwecji oraz budujemy wartość opartą na wiedzy i partnerstwie.</p>
+        </div>
+
+        <!-- Kolumna 2: Zdjęcia lewe -->
+        <div class="hero__col hero__col--left">
+            <div class="hero__img-wrap hero__img-wrap--a">
+                <img src="images/hero1.png" alt="Mężczyzna z dzieckiem" class="hero__img">
+            </div>
+            <div class="hero__img-wrap hero__img-wrap--b">
+                <img src="images/hero2.png" alt="Starszy mężczyzna ze smartfonem" class="hero__img">
+            </div>
+        </div>
+
+        <!-- Kolumna 3: VIDEO -->
+        <div class="hero__col hero__col--center">
+            <div class="card card--video hero__video-card" id="videoCard">
+                <video class="card__video" autoplay muted loop playsinline>
+                    <source src="wideo/pelion_scalone_wideo.mp4" type="video/mp4">
+                </video>
+                <button class="card__play" aria-label="Pauza/Odtwórz">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <rect x="2" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
+                        <rect x="10" y="2" width="4" height="12" rx="1" fill="rgba(247,246,245,0.9)"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Kolumna 4: Zdjęcia prawe -->
+        <div class="hero__col hero__col--right">
+            <div class="hero__img-wrap hero__img-wrap--d">
+                <img src="images/hero3.png" alt="Para seniorów" class="hero__img">
+            </div>
+            <div class="hero__img-wrap hero__img-wrap--e">
+                <img src="images/hero4.png" alt="Kobieta z dziewczynką" class="hero__img">
+            </div>
+        </div>
+
+    </div><!-- /hero__grid -->
+
+    <!-- TEKST WIDEO K3 – pojawia się gdy wideo wypełnia ekran -->
+    <div class="hero__video-text" id="heroVideoText">
+        <p class="hero__video-h">Budujemy polską gospodarkę</p>
+        <div class="hero__underline"></div>
+    </div>
+
+</section>
+</div><!-- /hero-scroll-wrap -->
+
+<!-- ══ CYTAT ══════════════════════════════════════════════════ -->
+<section class="pq">
+    <div class="pq__inner">
+        <p id="pqText">Pelion jest największą firmą w sektorze ochrony zdrowia w Polsce oraz jedną z największych zbudowanych od podstaw dzięki <strong>polskiemu kapitałowi</strong> po 1989 roku.</p>
+    </div>
+</section>
+
+<!-- ══ O NAS ══════════════════════════════════════════════════ -->
+<div class="onas-scroll-wrap">
+<section class="onas">
+    <div class="onas__left">
+        <div class="onas__heading">
+            <h2 class="sec-title">O nas</h2>
+            <div class="sec-line"></div>
+        </div>
+        <div class="onas__accordion">
+            <div class="onas__item onas__item--open" data-photo="0">
+                <button class="onas__trigger">Misja</button>
+                <div class="onas__body">
+                    <p>Czujemy się odpowiedzialni za zdrowie Pacjentów — troska o nie nadaje sens naszemu działaniu. Stawiając Pacjenta w centrum uwagi, dbamy o jakość i bezpieczeństwo produktów oraz promujemy postawy prozdrowotne.</p>
+                </div>
+            </div>
+            <div class="onas__item" data-photo="1">
+                <button class="onas__trigger">Wizja</button>
+                <div class="onas__body">
+                    <p>Dążymy do bycia liderem innowacji w sektorze ochrony zdrowia, łącząc tradycję z nowoczesnością i stawiając pacjenta w centrum każdej decyzji.</p>
+                </div>
+            </div>
+            <div class="onas__item" data-photo="2">
+                <button class="onas__trigger">Wartości</button>
+                <div class="onas__body">
+                    <p>Odpowiedzialność, partnerstwo, innowacyjność i zrównoważony rozwój to fundamenty, na których budujemy każdy aspekt naszej działalności.</p>
+                </div>
+            </div>
+            <div class="onas__item" data-photo="3">
+                <button class="onas__trigger">ESG</button>
+                <div class="onas__body">
+                    <p>Realizujemy strategię zrównoważonego rozwoju, dbając o środowisko, ład korporacyjny i odpowiedzialność społeczną na każdym poziomie organizacji.</p>
+                </div>
+            </div>
+            <div class="onas__item" data-photo="4">
+                <button class="onas__trigger">Zasięg</button>
+                <div class="onas__body">
+                    <p>Prowadzimy działalność w Polsce, na Litwie i w Szwecji, docierając do milionów pacjentów. Dynamicznie rozszerzamy zasięg geograficzny w Europie.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="onas__right">
+        <!-- foto 0: Misja -->
+        <img src="images/misja.png" alt="Pelion – misja" class="onas__photo onas__photo--active" data-photo="0">
+        <!-- foto 1: Wizja -->
+        <img src="images/hero6.png" alt="Pelion – wizja" class="onas__photo" data-photo="1">
+        <!-- foto 2: Wartości -->
+        <img src="images/hero2.png" alt="Pelion – wartości" class="onas__photo" data-photo="2">
+        <!-- foto 3: ESG -->
+        <img src="images/hero4.png" alt="Pelion – ESG" class="onas__photo" data-photo="3">
+        <!-- foto 4: Zasięg -->
+        <img src="images/mapa.png" alt="Zasięg Pelion w Europie" class="onas__photo" data-photo="4">
+    </div>
+</section>
+</div><!-- /onas-scroll-wrap -->
+
+<!-- ══ PELION W LICZBACH ══════════════════════════════════════ -->
+<div class="liczby-wrap">
+<section class="liczby">
+    <div class="liczby__head">
+        <h2 class="sec-title">Pelion w liczbach</h2>
+        <div class="sec-line"></div>
+    </div>
+    <div class="liczby__scene">
+
+        <!-- CENTER: 99% – zielony stroke, startuje w centrum -->
+        <div class="lb lb--lg lb--center-el" id="lb-center">
+            <span class="lb__big">99<span class="lb__pct">%</span></span>
+            <p class="lb__text">Skuteczność realizacji zamówień — nasz standard.</p>
+        </div>
+
+        <!-- SATELITY – wskakują do centrum kolejno na scrollu -->
+        <div class="lb lb--md lb--sat" id="lb-ul">
+            <span class="lb__num">Od 1990</span>
+            <p class="lb__desc">współtworzymy polską gospodarkę</p>
+        </div>
+
+        <div class="lb lb--sm lb--sat" id="lb-ll">
+            <span class="lb__num">18 mld zł</span>
+            <p class="lb__desc">przychodów ze sprzedaży rocznie</p>
+        </div>
+
+        <div class="lb lb--md lb--sat" id="lb-lr">
+            <span class="lb__num">11 000</span>
+            <p class="lb__desc">pracowników w Polsce, na Litwie i w Szwecji</p>
+        </div>
+
+        <div class="lb lb--sm lb--sat" id="lb-ur">
+            <span class="lb__num">35</span>
+            <p class="lb__desc">lat innowacji w ochronie zdrowia</p>
+        </div>
+
+    </div>
+</section>
+</div>
+
+<!-- ══ PELION W LICZBACH 2 — statyczny widok orbitalny ════════ -->
+<section class="liczby2">
+    <div class="liczby2__head">
+        <h2 class="sec-title">Pelion w liczbach</h2>
+        <div class="sec-line"></div>
+    </div>
+    <div class="liczby2__scene">
+
+        <!-- CENTER: 99% -->
+        <div class="lb2 lb2--lg" id="lb2-center">
+            <span class="lb__big">99<span class="lb__pct">%</span></span>
+            <p class="lb__text">Skuteczność realizacji zamówień — nasz standard.</p>
+        </div>
+
+        <!-- upper-left: Od 1990 -->
+        <div class="lb2" id="lb2-ul">
+            <span class="lb__num">Od 1990</span>
+            <p class="lb__desc">współtworzymy polską gospodarkę</p>
+        </div>
+
+        <!-- lower-left: 18 mld zł -->
+        <div class="lb2" id="lb2-ll">
+            <span class="lb__num">18 mld zł</span>
+            <p class="lb__desc">przychodów ze sprzedaży rocznie</p>
+        </div>
+
+        <!-- lower-right: 11 000 -->
+        <div class="lb2" id="lb2-lr">
+            <span class="lb__num">11 000</span>
+            <p class="lb__desc">pracowników w Polsce, na Litwie i w Szwecji</p>
+        </div>
+
+        <!-- upper-right: 35 -->
+        <div class="lb2" id="lb2-ur">
+            <span class="lb__num">35</span>
+            <p class="lb__desc">lat innowacji w ochronie zdrowia</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══ MARKI BUDUJĄCE WARTOŚĆ ══════════════════════════════════ -->
+<section class="marki">
+    <div class="marki__head">
+        <h2 class="sec-title sec-title--white">Marki budujące wartość</h2>
+        <div class="sec-line"></div>
+    </div>
+    <div class="marki__track-wrap">
+        <!-- rząd 1 – scroll w lewo -->
+        <div class="marki__track">
+            <div class="marki__row marki__row--left" id="markiRow1">
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharmalink.png" alt="Pharmalink" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharea-lab.png" alt="Pharea Lab" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-ILS.png" alt="ILS" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-animalcare-white.svg fill.png" alt="Animal Care" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharmalink.png" alt="Pharmalink" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharea-lab.png" alt="Pharea Lab" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-ILS.png" alt="ILS" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-animalcare-white.svg fill.png" alt="Animal Care" class="marki__logo"></a>
+            </div>
+        </div>
+        <!-- rząd 2 – scroll w prawo -->
+        <div class="marki__track">
+            <div class="marki__row marki__row--right" id="markiRow2">
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-ILS.png" alt="ILS" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-animalcare-white.svg fill.png" alt="Animal Care" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharmalink.png" alt="Pharmalink" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharea-lab.png" alt="Pharea Lab" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-ILS.png" alt="ILS" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-animalcare-white.svg fill.png" alt="Animal Care" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharmalink.png" alt="Pharmalink" class="marki__logo"></a>
+                <a href="javascript:void(0)" class="marki__item"><img src="images/logo-pharea-lab.png" alt="Pharea Lab" class="marki__logo"></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ AKTUALNOŚCI ════════════════════════════════════════════ -->
+<section class="aktual">
+    <div class="aktual__head">
+        <h2 class="sec-title">Aktualności</h2>
+        <div class="sec-line"></div>
+    </div>
+    <div class="aktual__cards">
+        <article class="acard">
+            <img src="images/AKTUALNOŚCI-1.png" alt="" class="acard__img">
+            <div class="acard__overlay"></div>
+            <div class="acard__green-overlay"></div>
+            <div class="acard__content">
+                <time class="acard__date">16.03.2026</time>
+                <p class="acard__title">Pelion S.A. i CEPD N.V. nowymi inwestorami DocMorris AG</p>
+                <span class="acard__arrow">→</span>
+            </div>
+        </article>
+        <article class="acard">
+            <img src="images/AKTUALNOŚCI-2.png" alt="" class="acard__img">
+            <div class="acard__overlay"></div>
+            <div class="acard__green-overlay"></div>
+            <div class="acard__content">
+                <time class="acard__date">16.03.2026</time>
+                <p class="acard__title">Pelion S.A. i CEPD N.V. nowymi inwestorami DocMorris AG</p>
+                <span class="acard__arrow">→</span>
+            </div>
+        </article>
+        <article class="acard">
+            <img src="images/AKTUALNOŚCI-3.png" alt="" class="acard__img">
+            <div class="acard__overlay"></div>
+            <div class="acard__green-overlay"></div>
+            <div class="acard__content">
+                <time class="acard__date">16.03.2026</time>
+                <p class="acard__title">Pelion S.A. i CEPD N.V. nowymi inwestorami DocMorris AG</p>
+                <span class="acard__arrow">→</span>
+            </div>
+        </article>
+    </div>
+    <div class="aktual__dots">
+        <span class="dot dot--active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<footer class="footer">
+    <div class="footer__inner">
+
+        <!-- kolumna kontakt -->
+        <div class="footer__col footer__col--contact">
+            <p class="footer__label">KONTAKT</p>
+            <p class="footer__brand">Pelion S.A.</p>
+            <ul class="footer__list">
+                <li class="footer__list-item">
+                    <img src="images/home_FILL0_wght400_GRAD0_opsz48 1.svg" alt="" class="footer__icon">
+                    <span>ul. Zbąszyńska 3,<br>91-342 Łódź</span>
+                </li>
+                <li class="footer__list-item">
+                    <img src="images/call_FILL0_wght400_GRAD0_opsz48 1.svg" alt="" class="footer__icon">
+                    <a href="tel:+48422007468">+48 42 200 74 68</a>
+                </li>
+                <li class="footer__list-item">
+                    <img src="images/mail_FILL0_wght400_GRAD0_opsz48 1.svg" alt="" class="footer__icon">
+                    <a href="mailto:sekretariat@pelion.eu">sekretariat@pelion.eu</a>
+                </li>
+            </ul>
+            <a href="#" class="footer__cta">KONTAKT</a>
+            <div class="footer__social">
+                <a href="#" aria-label="LinkedIn" class="footer__social-link">
+                    <img src="images/social-media-linkedin.svg" alt="LinkedIn" class="footer__social-icon">
+                </a>
+                <a href="#" aria-label="Facebook" class="footer__social-link">
+                    <img src="images/social-media-fb-3.svg" alt="Facebook" class="footer__social-icon">
+                </a>
+            </div>
+        </div>
+
+        <div class="footer__divider"></div>
+
+        <!-- kolumna nawigacja -->
+        <div class="footer__col">
+            <p class="footer__label">AKTUALNOŚCI</p>
+            <ul class="footer__nav">
+                <li><a href="#">Strona główna</a></li>
+                <li><a href="#">Struktura organizacyjna</a></li>
+                <li><a href="#">Zarząd i Rada Nadzorcza</a></li>
+                <li><a href="#" class="footer__nav-bold">Historia</a></li>
+                <li><a href="#">Raporty</a></li>
+                <li><a href="#">Ogłoszenia spółki</a></li>
+                <li><a href="#">Aktualności</a></li>
+            </ul>
+        </div>
+
+        <!-- kolumna linie biznesowe -->
+        <div class="footer__col">
+            <p class="footer__label">LINIE BIZNESOWE</p>
+            <ul class="footer__nav">
+                <li><a href="#">Sprzedaż hurtowa</a></li>
+                <li><a href="#">Sprzedaż detaliczna</a></li>
+                <li><a href="#">Zaopatrzenie szpitali i usługi logistyczne</a></li>
+                <li><a href="#">Pozostała działalność</a></li>
+                <li><a href="#">Marketing i e-commerce</a></li>
+            </ul>
+        </div>
+
+        <!-- kolumna inne -->
+        <div class="footer__col">
+            <p class="footer__label">INNE</p>
+            <ul class="footer__nav">
+                <li><a href="#">Kariera</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Biblioteka mediów</a></li>
+                <li><a href="#">Zasoby do pobrania</a></li>
+                <li><a href="#">Polityka prywatności</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- pasek dolny -->
+    <div class="footer__bar">
+        <div class="footer__bar-left">
+            <svg width="100" height="22" viewBox="0 0 120 26" fill="none">
+                <text x="0" y="20" font-family="Montserrat,sans-serif" font-weight="700" font-size="20" fill="#fff" letter-spacing="1">PELION</text>
+                <polygon points="110,2 120,2 120,12" fill="#009641"/>
+            </svg>
+            <span>Wszelkie prawa zastrzeżone © 2025 – Pelion SA</span>
+            <a href="#">Kariera</a>
+        </div>
+        <span class="footer__bar-right">Realizacja: Codeq</span>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/scroll.js"></script>
+</body>
+</html>

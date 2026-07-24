@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - hero-v2
+      - hero-v3
   workflow_dispatch:
 
 permissions:
@@ -27,9 +28,16 @@ jobs:
           ref: hero-v2
           path: hero-v2-src
 
+      - name: Checkout hero-v3
+        uses: actions/checkout@v4
+        with:
+          ref: hero-v3
+          path: hero-v3-src
+
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy/hero-v2
+          mkdir -p deploy/hero-v3
 
           rsync -av \
             --exclude='node_modules' \
@@ -48,6 +56,15 @@ jobs:
             --exclude='package.json' \
             --exclude='package-lock.json' \
             hero-v2-src/ deploy/hero-v2/
+
+          rsync -av \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            --exclude='.claude' \
+            --exclude='.github' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            hero-v3-src/ deploy/hero-v3/
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3

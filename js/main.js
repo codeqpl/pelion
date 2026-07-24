@@ -157,20 +157,23 @@ function runPhase3setup() {
             trigger: '.hero-scroll-wrap',
             start:   'top top',
             end:     'bottom bottom',
-            scrub:   0.8,
+            scrub:   0.4,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
                 if (fullscreenLocked) {
                     nav.classList.add('nav--film');
                     return;
                 }
-                if (self.progress >= 0.5) {
+                if (self.progress >= 0.3) {
                     nav.classList.add('nav--film');
                     if (!textsStarted) {
                         textsStarted     = true;
                         fullscreenLocked = true;
-                        gsap.set(overlay, { top: 0, left: 0, width: vw, height: vh });
                         gsap.killTweensOf(overlay);
+                        gsap.to(overlay, {
+                            top: 0, left: 0, width: vw, height: vh,
+                            duration: 0.35, ease: 'power2.out',
+                        });
                         startTextAnimations();
                     }
                 } else {
@@ -203,10 +206,10 @@ function runPhase3setup() {
     });
 
     mainTl.to(overlay,
-        { top: 0, left: 0, width: vw, height: vh, ease: 'none', duration: 0.5 }, 0);
+        { top: 0, left: 0, width: vw, height: vh, ease: 'none', duration: 0.3 }, 0);
     mainTl.to(elementsToFade,
-        { opacity: 0, ease: 'none', duration: 0.5 }, 0);
-    mainTl.to({}, { duration: 0.5 }, 0.5);
+        { opacity: 0, ease: 'none', duration: 0.3 }, 0);
+    mainTl.to({}, { duration: 0.7 }, 0.3);
 
     /* ── 20 s inactivity auto-zoom ─────────────────────────────
        Brak aktywności użytkownika przez 20 s (mysz, scroll, klik,

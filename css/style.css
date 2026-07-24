@@ -373,7 +373,7 @@ body {
    O NAS
 ═══════════════════════════════════════════════════════════ */
 .onas-scroll-wrap {
-    height: 425vh;
+    height: 250vh;
     position: relative;
 }
 
@@ -738,9 +738,12 @@ body {
 
 /* Większe liczby w satelitach lb2 */
 .lb2:not(.lb2--lg) .lb__num  { font-size: 44px; }
-.lb2:not(.lb2--lg) .lb__desc { font-size: 15px; }
+.lb2:not(.lb2--lg) .lb__desc { font-size: 12px; }
 
 #lb2-ll .lb__num { font-size: 42px; }
+
+/* Mniejszy opis w centrum (tylko sekcja 2, nie dotyka pierwszej sekcji liczb) */
+.liczby2 .lb__text { font-size: 13px; }
 
 /* ═══════════════════════════════════════════════════════════
    MARKI BUDUJĄCE WARTOŚĆ
@@ -822,25 +825,6 @@ body {
 }
 .marki__item:hover::before { opacity: 0.18; }
 
-/* Zielona strzałka */
-.marki__arrow {
-    position: absolute;
-    bottom: 12px;
-    right: 14px;
-    color: #009641;
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 1;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: opacity 0.25s ease, transform 0.3s ease;
-    pointer-events: none;
-}
-.marki__item:hover .marki__arrow {
-    opacity: 1;
-    transform: translateX(4px);
-}
-
 @keyframes marquee-left {
     from { transform: translateX(0); }
     to   { transform: translateX(calc(var(--marquee-w, 50%) * -1)); }
@@ -858,6 +842,11 @@ body {
     object-fit: contain;
     filter: brightness(0) invert(1);
     opacity: 0.8;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+.marki__item:hover .marki__logo {
+    filter: none;
+    opacity: 1;
 }
 .marki__logo[src="images/logo-pharea-lab.png"] {
     max-width: 190px;

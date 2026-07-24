@@ -148,68 +148,56 @@ function runPhase3setup() {
     /* Elementy do wygaszenia przy powiększeniu wideo */
     const elementsToFade = [...photoWraps, heroText];
 
-    /* ── ScrollTrigger ──────────────────────────────────────
-       0.00 – 0.50   overlay rośnie do pełnego ekranu
-       po 0.50       hasła pojawiają się automatycznie (time-based)
+    /* ── Zoom do pełnego ekranu ──────────────────────────────
+       Bez pośredniego etapu wzrostu powiązanego ze scrollem —
+       pierwszy scroll (lub 20 s bezczynności) od razu uruchamia
+       płynne (czasowe, nie scroll-scrubowane) powiększenie wideo.
     ── */
-    const mainTl = gsap.timeline({
-        scrollTrigger: {
-            trigger: '.hero-scroll-wrap',
-            start:   'top top',
-            end:     'bottom bottom',
-            scrub:   0.4,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-                if (fullscreenLocked) {
-                    nav.classList.add('nav--film');
-                    return;
-                }
-                if (self.progress >= 0.3) {
-                    nav.classList.add('nav--film');
-                    if (!textsStarted) {
-                        textsStarted     = true;
-                        fullscreenLocked = true;
-                        gsap.killTweensOf(overlay);
-                        gsap.to(overlay, {
-                            top: 0, left: 0, width: vw, height: vh,
-                            duration: 0.35, ease: 'power2.out',
-                        });
-                        startTextAnimations();
-                    }
-                } else {
-                    nav.classList.remove('nav--film');
-                    if (textsStarted || textTl) resetTexts();
-                }
-            },
-            onLeave: () => {
-                const sy = window.scrollY || window.pageYOffset;
-                Object.assign(overlay.style, {
-                    position: 'absolute',
-                    top:      sy + 'px',
-                    left:     '0',
-                    width:    vw + 'px',
-                    height:   vh + 'px',
-                });
-                nav.classList.remove('nav--film');
-            },
-            onEnterBack: () => {
-                Object.assign(overlay.style, {
-                    position: 'fixed',
-                    top:      '0',
-                    left:     '0',
-                    width:    vw + 'px',
-                    height:   vh + 'px',
-                });
-                if (textsStarted || textTl) resetTexts();
-            },
+    function triggerZoom() {
+        if (fullscreenLocked) return;
+        fullscreenLocked = true;
+        textsStarted     = true;
+        nav.classList.add('nav--film');
+        gsap.killTweensOf(overlay);
+        gsap.to(overlay, { top: 0, left: 0, width: vw, height: vh, duration: 0.6, ease: 'power2.inOut' });
+        gsap.to(elementsToFade, { opacity: 0, duration: 0.5 });
+        gsap.delayedCall(0.6, startTextAnimations);
+    }
+
+    /* Repozycjonowanie fixed overlay przy wyjściu/wejściu w hero-scroll-wrap */
+    ScrollTrigger.create({
+        trigger: '.hero-scroll-wrap',
+        start:   'top top',
+        end:     'bottom bottom',
+        invalidateOnRefresh: true,
+        onLeave: () => {
+            const sy = window.scrollY || window.pageYOffset;
+            Object.assign(overlay.style, {
+                position: 'absolute',
+                top:      sy + 'px',
+                left:     '0',
+                width:    vw + 'px',
+                height:   vh + 'px',
+            });
+            nav.classList.remove('nav--film');
+        },
+        onEnterBack: () => {
+            Object.assign(overlay.style, {
+                position: 'fixed',
+                top:      '0',
+                left:     '0',
+                width:    vw + 'px',
+                height:   vh + 'px',
+            });
+            if (textsStarted || textTl) resetTexts();
         },
     });
 
-    mainTl.to(overlay,
-        { top: 0, left: 0, width: vw, height: vh, ease: 'none', duration: 0.3 }, 0);
-    mainTl.to(elementsToFade,
-        { opacity: 0, ease: 'none', duration: 0.3 }, 0);
-    mainTl.to({}, { duration: 0.7 }, 0.3);
+    function onFirstScroll() {
+        if (fullscreenLocked) return;
+        triggerZoom();
+    }
+    window.addEventListener('scroll', onFirstScroll, { passive: true });
 
     /* ── 20 s inactivity auto-zoom ─────────────────────────────
        Brak aktywności użytkownika przez 20 s (mysz, scroll, klik,
@@ -218,21 +206,10 @@ function runPhase3setup() {
     ── */
     let inactivityTimer = null;
 
-    function triggerAutoZoom() {
-        if (fullscreenLocked) return;
-        fullscreenLocked = true;
-        textsStarted     = true;
-        nav.classList.add('nav--film');
-        gsap.killTweensOf(overlay);
-        gsap.to(overlay, { top: 0, left: 0, width: vw, height: vh, duration: 1.2, ease: 'power2.inOut' });
-        gsap.to(elementsToFade, { opacity: 0, duration: 0.8 });
-        gsap.delayedCall(1.2, startTextAnimations);
-    }
-
     function resetInactivityTimer() {
         if (fullscreenLocked) return;
         clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(triggerAutoZoom, 20000);
+        inactivityTimer = setTimeout(triggerZoom, 20000);
     }
 
     ['mousemove', 'scroll', 'click', 'touchstart', 'keydown'].forEach(evt =>

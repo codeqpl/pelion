@@ -6,13 +6,14 @@
     'use strict';
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let lenis; /* wystawione na zewnątrz if-a, potrzebne w initOnasScroll (klik) */
 
     /* ── 1. Lenis smooth scroll ──────────────────────────
        Wyłączamy na touch-only mobile (smoothTouch: false)
        i przy prefers-reduced-motion.
     ── */
     if (!reduced) {
-        const lenis = new Lenis({
+        lenis = new Lenis({
             duration:        1.1,
             easing:          t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             smoothTouch:     false,
@@ -135,7 +136,7 @@
 
         setActive(0);   /* stan startowy: Misja otwarta */
 
-        ScrollTrigger.create({
+        const st = ScrollTrigger.create({
             trigger: wrap,
             start:   'top top',
             end:     'bottom bottom',
@@ -147,6 +148,24 @@
                 );
                 setActive(idx);
             },
+        });
+
+        /* ── klik w zakładkę — dodatkowy sposób przełączania,
+           obok scrolla. Przewija do segmentu danej zakładki
+           wewnątrz .onas-scroll-wrap (Lenis, gdy dostępny). ── */
+        items.forEach((item, i) => {
+            const trigger = item.querySelector('.onas__trigger');
+            if (!trigger) return;
+            trigger.addEventListener('click', () => {
+                setActive(i);
+                const progress = (i + 0.5) / items.length;
+                const target   = st.start + progress * (st.end - st.start);
+                if (lenis) {
+                    lenis.scrollTo(target, { duration: 1.1 });
+                } else {
+                    window.scrollTo({ top: target, behavior: reduced ? 'auto' : 'smooth' });
+                }
+            });
         });
     })();
 
